@@ -31,9 +31,4 @@ Temporary Items
 .apdisk
 
 # End of https://www.gitignore.io/api/macos
-apps/user_app/__pycache__/urls.cpython-37.pyc
-apps/user_app/__pycache__/views.cpython-37.pyc
-apps/user_app/__pycache__/urls.cpython-37.pyc
-apps/user_app/__pycache__/views.cpython-37.pyc
-apps/user_app/__pycache__/urls.cpython-37.pyc
-apps/user_app/__pycache__/views.cpython-37.pyc
+__pycache__
