@@ -10,7 +10,7 @@ NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
 def index(request):
     if 'uid' in request.session:
         uid = request.session['uid']
-        return HttpResponse('success logged in, your id is: '+request.session['uid'])
+        return HttpResponse('success logged in, your id is: '+str(request.session['uid']))
     else:
         return render(request, 'login.html')
 
@@ -27,7 +27,7 @@ def registering(request):
         errors['fname'] = 'First name must contain at least two letters and contains only letters'
         context['errors'] = errors
     if not NAME_REGEX.match(request.POST['lname']):
-        errors['lname'] = 'First name must contain at least two letters and contains only letters'
+        errors['lname'] = 'Last name must contain at least two letters and contains only letters'
         context['errors'] = errors
     if not EMAIL_REGEX.match(request.POST['email']):
         errors['email'] = 'Invalid email address'
@@ -39,26 +39,29 @@ def registering(request):
         errors['confirm'] = 'Passwords does not match'
         context['errors'] = errors
 
-
-    user = User.objects.get(email=request.POST['email'])
-    if user.email == request.POST['email']:
+    try:
+        user = User.objects.get(email=request.POST['email'])
         errors['email'] = 'Email is already exist'
         context['errors'] = errors
+    except:
+        print('Email is not found')
 
     if not 'errors' in context:
         pw_hash = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
-        new_user = user.objects.create(first_name=request.POST['fname'],last_name=request.POST['lname'],email=request.POST['email'],password=request.POST['password'])
+        new_user = User.objects.create(first_name=request.POST['fname'],last_name=request.POST['lname'],email=request.POST['email'],password=request.POST['password'])
         new_user.save()
         request.session['uid'] = new_user.id
         return redirect('/')
     else:
-        return redirect('/register')
+        return render(request, 'register.html', context)
 
     
     return HttpResponse('Soon...')
 
 
 def login(request):
+    errors = {}
+    context = {}
     try:
         user = User.objects.get(email=request.POST['email'])
         if bcrypt.checkpw(request.POST['password'].encode(), user.password.encode()):
@@ -66,13 +69,15 @@ def login(request):
             request.session['uid'] = user.id
             return redirect('/')
         else:
-            print("failed password")
+            errors['password'] = 'Password is invalid'
             context = {
-            'error':'Entered email is not registered'
+                'errors':errors
             }
+            print("failed password")
             return render(request, 'login.html', context)
     except:
-        context = {
-            'error':'Entered email is not registered'
-        }
-        return render(request, 'login.html', context)
+            errors['email'] = 'Entered email is not registered'
+            context = {
+                'errors':errors
+            }
+            return render(request, 'login.html', context)
