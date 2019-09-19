@@ -1,20 +1,78 @@
 from django.shortcuts import render, redirect, HttpResponse
-
+from apps.user_app.models import *
+import re
+import bcrypt
 # Create your views here.
+
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$') 
+NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
 
 def index(request):
     if 'uid' in request.session:
         uid = request.session['uid']
-        return HttpResponse('Hi')
+        return HttpResponse('success logged in, your id is: '+request.session['uid'])
     else:
         return render(request, 'login.html')
 
 def register(request):
-    return render(request, 'register.html')
+    if 'uid' in request.session:
+        return redirect('/')
+    else:
+        return render(request, 'register.html')
 
 def registering(request):
+    context = {}
+    errors = {}
+    if not NAME_REGEX.match(request.POST['fname']):
+        errors['fname'] = 'First name must contain at least two letters and contains only letters'
+        context['errors'] = errors
+    if not NAME_REGEX.match(request.POST['lname']):
+        errors['lname'] = 'First name must contain at least two letters and contains only letters'
+        context['errors'] = errors
+    if not EMAIL_REGEX.match(request.POST['email']):
+        errors['email'] = 'Invalid email address'
+        context['errors'] = errors
+    if len(request.POST['password']) < 8:
+        errors['password'] = 'Your password must be at least 8 characters'
+        context['errors'] = errors
+    if request.POST['password'] != request.POST['confirm']:
+        errors['confirm'] = 'Passwords does not match'
+        context['errors'] = errors
+
+
+    user = User.objects.get(email=request.POST['email'])
+    if user.email == request.POST['email']:
+        errors['email'] = 'Email is already exist'
+        context['errors'] = errors
+
+    if not 'errors' in context:
+        pw_hash = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
+        new_user = user.objects.create(first_name=request.POST['fname'],last_name=request.POST['lname'],email=request.POST['email'],password=request.POST['password'])
+        new_user.save()
+        request.session['uid'] = new_user.id
+        return redirect('/')
+    else:
+        return redirect('/register')
+
+    
     return HttpResponse('Soon...')
 
 
 def login(request):
-    return HttpResponse('Soon...')
+    try:
+        user = User.objects.get(email=request.POST['email'])
+        if bcrypt.checkpw(request.POST['password'].encode(), user.password.encode()):
+            print("password match")
+            request.session['uid'] = user.id
+            return redirect('/')
+        else:
+            print("failed password")
+            context = {
+            'error':'Entered email is not registered'
+            }
+            return render(request, 'login.html', context)
+    except:
+        context = {
+            'error':'Entered email is not registered'
+        }
+        return render(request, 'login.html', context)
