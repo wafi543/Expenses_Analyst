@@ -12,6 +12,7 @@ def index(request):
         uid = request.session['uid']
         return HttpResponse('success logged in, your id is: '+str(request.session['uid']))
     else:
+        print('sdf')
         return render(request, 'login.html')
 
 def register(request):

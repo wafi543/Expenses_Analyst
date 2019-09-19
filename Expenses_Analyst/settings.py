@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'Expenses_Analyst.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'expenses_analyst',
+        'USER': 'root',
+        'PASSWORD':'toor',
+        'HOST': 'localhost',
+        'POST': '5432',
     }
 }
 
