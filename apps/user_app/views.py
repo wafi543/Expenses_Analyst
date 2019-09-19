@@ -49,7 +49,7 @@ def registering(request):
 
     if not 'errors' in context:
         pw_hash = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
-        new_user = User.objects.create(first_name=request.POST['fname'],last_name=request.POST['lname'],email=request.POST['email'],password=request.POST['password'])
+        new_user = User.objects.create(first_name=request.POST['fname'],last_name=request.POST['lname'],email=request.POST['email'],password=pw_hash)
         new_user.save()
         request.session['uid'] = new_user.id
         return redirect('/')
