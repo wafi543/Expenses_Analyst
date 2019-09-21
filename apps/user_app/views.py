@@ -85,6 +85,7 @@ def registering(request):
 def login(request):
     errors = {}
     context = {}
+    uInfo = {'email': request.POST['email']}
     try:
         user = User.objects.get(email=request.POST['email'])
         if bcrypt.checkpw(request.POST['password'].encode(), user.password.encode()):
@@ -94,14 +95,12 @@ def login(request):
         else:
             errors['password'] = 'Password is invalid'
             context = {
-                'errors': errors
+                'errors': errors,
+                'uInfo': uInfo,
             }
             print("failed password")
             return render(request, 'login.html', context)
     except:
-        uInfo = {
-            'email': request.POST['email'],
-        }
         errors['email'] = 'Entered email is not registered'
         context = {
             'errors': errors,
