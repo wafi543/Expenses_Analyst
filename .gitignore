@@ -1,4 +1,4 @@
-__pycache__/
+
 
 __pycache__
 
@@ -36,4 +36,3 @@ Temporary Items
 # End of https://www.gitignore.io/api/macos
 *.pyc
 
-*.pyc
