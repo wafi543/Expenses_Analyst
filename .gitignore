@@ -1,3 +1,4 @@
+__pycache__/
 
 # Created by https://www.gitignore.io/api/macos
 # Edit at https://www.gitignore.io/?templates=macos
@@ -31,5 +32,5 @@ Temporary Items
 .apdisk
 
 # End of https://www.gitignore.io/api/macos
-__pycache__
 *.pyc
+
