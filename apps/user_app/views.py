@@ -101,7 +101,4 @@ def login(request):
 def add_file(request):
     return render(request, 'add_file.html')
 
-def logout(request):
-    del request.session['uid']
-    return redirect('/')
 

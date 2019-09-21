@@ -7,5 +7,4 @@ urlpatterns = [
     url(r'^register$', views.register),
     url(r'^registering$', views.registering),
     url(r'^add_file$', views.add_file),
-    url(r'^logout$', views.logout),
 ]
