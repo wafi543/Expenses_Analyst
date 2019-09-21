@@ -16,7 +16,7 @@
         <div class="form">
             <form class="login-form" action="/login" method="POST">
                 {% csrf_token %}
-                <input type="text" placeholder="Email" name="email"/>
+                <input type="text" placeholder="Email" name="email" value="{{uInfo.email}}"/>
                 {% if 'email' in errors %}
                 <p class="error">{{errors.email}}</p>
                 {% endif %}
