@@ -4,8 +4,9 @@ import re
 import bcrypt
 # Create your views here.
 
-EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$') 
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
+
 
 def index(request):
     if 'uid' in request.session:
@@ -15,11 +16,13 @@ def index(request):
         print('sdf')
         return render(request, 'login.html')
 
+
 def register(request):
     if 'uid' in request.session:
         return redirect('/')
     else:
         return render(request, 'register.html')
+
 
 def registering(request):
     context = {}
@@ -48,15 +51,22 @@ def registering(request):
         print('Email is not found')
 
     if not 'errors' in context:
-        pw_hash = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
-        new_user = User.objects.create(first_name=request.POST['fname'],last_name=request.POST['lname'],email=request.POST['email'],password=pw_hash)
+        pw_hash = bcrypt.hashpw(
+            request.POST['password'].encode(), bcrypt.gensalt())
+        new_user = User.objects.create(
+            first_name=request.POST['fname'], last_name=request.POST['lname'], email=request.POST['email'], password=pw_hash)
         new_user.save()
         request.session['uid'] = new_user.id
         return redirect('/')
     else:
+        uInfo ={
+            'fname': request.POST['fname'],
+            'lname': request.POST['lname'],
+            'email': request.POST['email'],
+        }
+        context['uInfo'] = uInfo
         return render(request, 'register.html', context)
 
-    
     return HttpResponse('Soon...')
 
 
@@ -72,13 +82,26 @@ def login(request):
         else:
             errors['password'] = 'Password is invalid'
             context = {
-                'errors':errors
+                'errors': errors
             }
             print("failed password")
             return render(request, 'login.html', context)
     except:
-            errors['email'] = 'Entered email is not registered'
-            context = {
-                'errors':errors
-            }
-            return render(request, 'login.html', context)
+        uInfo = {
+            'email': request.POST['email'],
+        }
+        errors['email'] = 'Entered email is not registered'
+        context = {
+            'errors': errors,
+            'uInfo': uInfo,
+        }
+        return render(request, 'login.html', context)
+
+
+def add_file(request):
+    return render(request, 'add_file.html')
+
+def logout(request):
+    del request.session['uid']
+    return redirect('/')
+
