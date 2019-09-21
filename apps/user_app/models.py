@@ -17,6 +17,8 @@ class File(models.Model):
     name = models.CharField(max_length=50)
     path = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, related_name="files", on_delete=models.PROTECT)
+
 
 
 class Report(models.Model):
