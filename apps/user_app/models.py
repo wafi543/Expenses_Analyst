@@ -20,6 +20,6 @@ class File(models.Model):
 
 
 class Report(models.Model):
-    file_id = models.ForeignKey(File, related_name="reports")
+    file_id = models.ForeignKey(File, related_name="reports", on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
 

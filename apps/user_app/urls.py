@@ -9,4 +9,6 @@ urlpatterns = [
     url(r'^registering$', views.registering),
     url(r'^profile$', views.profile),
     url(r'^update_profile$', views.update_profile),
+    url(r'^add_file$', views.add_file),
+
 ]
