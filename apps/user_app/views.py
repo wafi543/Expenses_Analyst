@@ -8,7 +8,6 @@ import datetime
 import csv
 import json
 import requests
-import os.path
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
@@ -247,7 +246,7 @@ def upload_file(request):
     # with open(f'apps/user_app/static/reports/{report_path}', 'w') as json_file:
     #     json.dump(r.text, json_file)
     # Save the JSON
-    f = open( f'apps/user_app/static/reports/{report_path}', 'w')
+    f = open(f'apps/user_app/static/reports/{report_path}', 'w')
     f.write(r.text)
     # Save report to the database
     new_report = Report.objects.create(
@@ -257,7 +256,6 @@ def upload_file(request):
     errors['uploaded'] = 'File uploaded successfully'
     request.session['dashboard_errors'] = errors
     return redirect('/')
-
 
 def my_files(request):
     if 'uid' in request.session:
@@ -325,3 +323,20 @@ def contact_process(request):
         errors['uploaded'] = 'Your message has been sent successfully, we will review your message soon. Thank you!'
         context['errors'] = errors
         return render(request, 'contact.html', context)
+
+def my_reports(request):
+    if 'uid' in request.session:
+        uid = request.session['uid']
+        try:
+            user = User.objects.get(id=uid)
+            reports = Report.objects.filter(user=user).order_by('id')
+            context = {
+                'data': data,
+                'user': user,
+                'reports': reports,
+            }
+        except:
+            return HttpResponse('error loading user')
+        return render(request, 'my_reports.html', context)
+    else:
+        return render(request, 'login.html')

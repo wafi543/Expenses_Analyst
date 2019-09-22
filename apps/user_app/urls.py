@@ -15,6 +15,8 @@ urlpatterns = [
     url(r'^my_files$', views.my_files),
     url(r'^contact$', views.contact),
     url(r'^contact_process$', views.contact_process),
+    url(r'^my_reports$', views.my_reports),
+
 ]
 
 if settings.DEBUG:
