@@ -5,6 +5,9 @@ import bcrypt
 from apps.user_app.core import *
 from django.core.files.storage import FileSystemStorage
 import datetime
+import csv
+import json
+import requests
 
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -222,15 +225,41 @@ def upload_file(request):
             return redirect('/')
         
         fileStore = FileSystemStorage()
-        path = f"{uid}/{uid}_{time}.csv"
-        fileStore.save(path, uploaded)
+        file_path = f"{uid}/{uid}_{time}.csv"
+        fileStore.save(file_path, uploaded)
         user = User.objects.get(id=uid)
+
+        # Save file to the database
         new_file = File.objects.create(
-            name=request.POST['file_name'], path=path, user=user)
+            name=request.POST['file_name'], path=file_path, user=user)
         new_file.save()
-        errors['uploaded'] = 'File uploaded successfully'
-        request.session['dashboard_errors'] = errors
-        return redirect('/')
+
+    # send file to API
+    f = open(f'apps/user_app/static/files/{file_path}', 'r')
+
+    reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
+    out = json.dumps([row for row in reader])
+
+    print(out)
+
+    r = requests.post('http://127.0.0.1:5000/', data=out)
+    print(r.content)
+
+    report_path = f"{uid}_{time}.json"
+    # If the file name exists, write a JSON string into the file.
+    # with open(f'apps/user_app/static/reports/{report_path}', 'w') as json_file:
+    #     json.dump(r.text, json_file)
+    # Save the JSON
+    f = open( f'apps/user_app/static/reports/{report_path}', 'w')
+    f.write(r.text)
+    # Save report to the database
+    new_report = Report.objects.create(
+        name=request.POST['file_name'], path=report_path, user=user, file=new_file)
+    new_report.save()
+
+    errors['uploaded'] = 'File uploaded successfully'
+    request.session['dashboard_errors'] = errors
+    return redirect('/')
 
 
 def my_files(request):
