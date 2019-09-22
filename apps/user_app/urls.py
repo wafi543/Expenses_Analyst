@@ -11,8 +11,8 @@ urlpatterns = [
     url(r'^registering$', views.registering),
     url(r'^profile$', views.profile),
     url(r'^update_profile$', views.update_profile),
-    url(r'^add_file$', views.add_file),
     url(r'^upload_file$', views.upload_file),
+    url(r'^my_files$', views.my_files),
 ]
 
 if settings.DEBUG:
