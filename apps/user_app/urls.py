@@ -13,8 +13,6 @@ urlpatterns = [
     url(r'^update_profile$', views.update_profile),
     url(r'^add_file$', views.add_file),
     url(r'^upload_file$', views.upload_file),
-
-
 ]
 
 if settings.DEBUG:

@@ -22,6 +22,13 @@ def index(request):
             }
         except:
             return HttpResponse('error loading user')
+
+        if 'dashboard_errors' in request.session:
+            context['errors'] = request.session['dashboard_errors']
+        try:
+            del request.session['dashboard_errors']
+        except:
+            print('error')
         return render(request, 'dashboard.html', context)
     else:
         return render(request, 'login.html')
@@ -61,12 +68,10 @@ def registering(request):
         errors['confirm'] = 'Passwords does not match'
         context['errors'] = errors
 
-    try:
+    if User.objects.filter(email=request.POST['email']).exists():
         user = User.objects.get(email=request.POST['email'])
         errors['email'] = 'Email is already exist'
         context['errors'] = errors
-    except:
-        print('Email is not found')
 
     if not 'errors' in context:
         pw_hash = bcrypt.hashpw(
@@ -189,13 +194,12 @@ def add_file(request):
 
 def upload_file(request):
     errors = {}
-    context = {}
     uid = str(request.session['uid'])
     time = datetime.datetime.now()
     time = str(time.strftime("%d_%m_%y_%H_%M_%S"))
     if request.method == "GET":
         print("a GET request is being made to this route")
-        return render(request, 'add_file.html')
+        return redirect('/')
     if request.method == "POST":
         uploaded = request.FILES['document']
         fileName = uploaded.name
@@ -206,12 +210,12 @@ def upload_file(request):
         # check if size is less than 2.6 megabyte
         if(fileSize > 2621440):
             errors['file_size'] = "file size is too big"
-            context['errors'] = errors
-            return render(request, 'add_file.html', context)
+            request.session['dashboard_errors'] = errors
+            return redirect('/')
         if not fileName.endswith('.csv'):
             errors['file_type'] = "Uploaded file is not of type csv"
-            context['errors'] = errors
-            return render(request, 'add_file.html', context)
+            request.session['dashboard_errors'] = errors
+            return redirect('/')
         fileStore = FileSystemStorage()
         path = f"{uid}/{uid}_{time}.csv"
         fileStore.save(path, uploaded)
@@ -219,5 +223,6 @@ def upload_file(request):
         new_file = File.objects.create(
             name=request.POST['file_name'], path=path, user=user)
         new_file.save()
-
-        return redirect("/")
+        errors['uploaded'] = 'File uploaded successfully'
+        request.session['dashboard_errors'] = errors
+        return redirect('/')
