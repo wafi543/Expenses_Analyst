@@ -4,17 +4,13 @@
     <title>Login Page</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <style>
-        .error {
-            color: red;
-        }
-    </style>
 </head>
 
 <body>
     <div class="login-page">
         <div class="form">
-            <form class="login-form" action="/login" method="POST">
+                <img id="logo" src="{% static 'images/logo@3x.png' %}" />
+                <form class="login-form" action="/login" method="POST">
                 {% csrf_token %}
                 <input type="text" placeholder="Email" name="email" value="{{uInfo.email}}"/>
                 {% if 'email' in errors %}
