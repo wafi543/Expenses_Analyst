@@ -247,13 +247,15 @@ def upload_file(request):
 
     report_path = f"{uid}_{time}.json"
     # If the file name exists, write a JSON string into the file.
-    with open(f'apps/user_app/static/reports/{report_path}', 'w') as json_file:
-        json.dump(r.text, json_file)
-
+    # with open(f'apps/user_app/static/reports/{report_path}', 'w') as json_file:
+    #     json.dump(r.text, json_file)
+    # Save the JSON
+    f = open( f'apps/user_app/static/reports/{report_path}', 'w')
+    f.write(r.text)
     # Save report to the database
-        new_report = Report.objects.create(
-            name=request.POST['file_name'], path=report_path, user=user, file=new_file)
-        new_report.save()
+    new_report = Report.objects.create(
+        name=request.POST['file_name'], path=report_path, user=user, file=new_file)
+    new_report.save()
 
     errors['uploaded'] = 'File uploaded successfully'
     request.session['dashboard_errors'] = errors
