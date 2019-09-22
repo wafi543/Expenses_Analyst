@@ -225,8 +225,7 @@ def upload_file(request):
         path = f"{uid}/{uid}_{time}.csv"
         fileStore.save(path, uploaded)
         user = User.objects.get(id=uid)
-        new_file = File.objects.create(
-            name=request.POST['file_name'], path=path, user=user)
+        new_file = File.objects.create(name=request.POST['file_name'], path=path, user=user)
         new_file.save()
         errors['uploaded'] = 'File uploaded successfully'
         request.session['dashboard_errors'] = errors
@@ -249,3 +248,53 @@ def my_files(request):
         return render(request, 'my_files.html', context)
     else:
         return render(request, 'login.html')
+
+def contact(request):
+    if 'uid' in request.session:
+        uid = request.session['uid']
+        try:
+            user = User.objects.get(id=uid)
+            context = {
+                'data': data,
+                'user': user,
+            }
+        except:
+            return HttpResponse('error loading user')
+        return render(request, 'contact.html', context)
+    else:
+        return render(request, 'login.html')
+
+def contact_process(request):
+    errors = {}
+    context = {'data':data}
+    uid = str(request.session['uid'])
+    time = datetime.datetime.now()
+    time = str(time.strftime("%d_%m_%y_%H_%M_%S"))
+    if request.method == "GET":
+        print("a GET request is being made to this route")
+        return redirect('/contact')
+    if request.method == "POST":
+        user = User.objects.get(id=uid)
+        uploaded = request.FILES['document']
+        fileName = uploaded.name
+        fileSize = uploaded.size
+        print(uploaded.name)
+        print(uploaded.size)
+
+        # check if size is less than 2.6 megabyte
+        if(fileSize > 2621440):
+            errors['file_size'] = "file size is too big"
+            context['errors'] = errors
+            return render(request, 'contact.html', context)
+        if not fileName.endswith('.png') and not fileName.endswith('.jpg'):
+            errors['file_type'] = 'Uploaded file is not an image'
+            context['errors'] = errors
+            return render(request, 'contact.html', context)
+        fileStore = FileSystemStorage()
+        path = f"messages/{uid}_{time}.png"
+        fileStore.save(path, uploaded)
+        new_message = Message.objects.create(content=request.POST['content'], path=path, sender=user)
+        new_message.save()
+        errors['uploaded'] = 'Your message has been sent successfully, we will review your message soon. Thank you!'
+        context['errors'] = errors
+        return render(request, 'contact.html', context)
