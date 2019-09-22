@@ -8,7 +8,7 @@ import datetime
 import csv
 import json
 import requests
-
+import os.path
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
@@ -228,7 +228,7 @@ def upload_file(request):
         file_path = f"{uid}/{uid}_{time}.csv"
         fileStore.save(file_path, uploaded)
         user = User.objects.get(id=uid)
-        new_file = File.objects.create(name=request.POST['file_name'], path=path, user=user)
+        new_file = File.objects.create(name=request.POST['file_name'], path=file_path, user=user)
         new_file.save()
 
     # send file to API
