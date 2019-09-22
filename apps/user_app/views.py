@@ -5,6 +5,9 @@ import bcrypt
 from apps.user_app.core import *
 from django.core.files.storage import FileSystemStorage
 import datetime
+import csv
+import json
+import requests
 
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -216,8 +219,26 @@ def upload_file(request):
         path = f"{uid}/{uid}_{time}.csv"
         fileStore.save(path, uploaded)
         user = User.objects.get(id=uid)
+
+        # Save file to the database
         new_file = File.objects.create(
             name=request.POST['file_name'], path=path, user=user)
         new_file.save()
 
-        return redirect("/")
+    # send file to API
+    f = open(f'apps/user_app/static/files/{path}', 'r')
+
+    reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
+    out = json.dumps([row for row in reader])
+
+    print(out)
+
+    r = requests.post('http://127.0.0.1:5000/', data=out)
+    print(r.text)
+ 
+
+    # If the file name exists, write a JSON string into the file.
+    with open('respons.json', 'w') as json_file:
+        json.dump(r.text, json_file)
+
+    return redirect("/")
