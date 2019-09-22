@@ -51,14 +51,14 @@
                             <p>My Profile</p>
                         </a>
                     </li>
-                    <li class="active">
-                        <a href="">
+                    <li>
+                        <a href="/my_files">
                             <i class="pe-7s-file"></i>
                             <p>My Files</p>
                         </a>
                     </li>
-                    <li>
-                        <a href="/my_reports">
+                    <li class="active">
+                        <a href="">
                             <i class="pe-7s-news-paper"></i>
                             <p>My Reports</p>
                         </a>
@@ -84,7 +84,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">My Files</a>
+                        <a class="navbar-brand" href="#">My Reports</a>
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-right">
@@ -109,8 +109,8 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="header">
-                                    <h4 class="title">My files</h4>
-                                    <p class="category">All files for "{{user.first_name}} {{user.last_name}}"</p>
+                                    <h4 class="title">My reports</h4>
+                                    <p class="category">All reports for "{{user.first_name}} {{user.last_name}}"</p>
                                 </div>
                                 <div class="content table-responsive table-full-width">
                                     <table class="table table-hover table-striped">
@@ -121,12 +121,12 @@
                                             <th>Path</th>
                                         </thead>
                                         <tbody>
-                                            {% for file in files %}
+                                            {% for report in reports %}
                                             <tr>
-                                                <td>{{file.id}}</td>
-                                                <td>{{file.name}}</td>
-                                                <td>{{file.created_at}}</td>
-                                                <td>{{file.path}}</td>
+                                                <td>{{report.id}}</td>
+                                                <td>{{report.name}}</td>
+                                                <td>{{report.created_at}}</td>
+                                                <td>{{report.path}}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>

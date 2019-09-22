@@ -15,11 +15,9 @@ class User(models.Model):
 
 class File(models.Model):
     name = models.CharField(max_length=50)
-    path = models.CharField(max_length=50)
+    path = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, related_name="files", on_delete=models.PROTECT)
-
-
 
 class Report(models.Model):
     name = models.CharField(max_length=50)
@@ -27,4 +25,11 @@ class Report(models.Model):
     user = models.ForeignKey(User, related_name="reports", on_delete=models.PROTECT)
     file = models.ForeignKey(File, related_name="reports", on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Message(models.Model):
+    content = models.TextField()
+    path = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sender = models.ForeignKey(User, related_name="messages", on_delete=models.PROTECT)
 

@@ -25,6 +25,15 @@
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+
+    <style>
+        .error {
+            color: red;
+        }
+        .green {
+            color: green
+        }
+    </style>
 </head>
 
 <body>
@@ -51,8 +60,8 @@
                             <p>My Profile</p>
                         </a>
                     </li>
-                    <li class="active">
-                        <a href="">
+                    <li>
+                        <a href="/my_files">
                             <i class="pe-7s-file"></i>
                             <p>My Files</p>
                         </a>
@@ -63,8 +72,8 @@
                             <p>My Reports</p>
                         </a>
                     </li>
-                    <li class="active-pro">
-                        <a href="/contact">
+                    <li class="active active-pro">
+                        <a href="">
                             <i class="pe-7s-chat"></i>
                             <p>Contact Support</p>
                         </a>
@@ -74,68 +83,47 @@
         </div>
 
         <div class="main-panel">
-            <nav class="navbar navbar-default navbar-fixed">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                            data-target="#navigation-example-2">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="#">My Files</a>
-                    </div>
-                    <div class="collapse navbar-collapse">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li>
-                                <p class="navbar-brand">Hello, {{user.first_name}}</p>
-                            </li>
-                            <li>
-                                <a href="/logout">
-                                    <p>Log out</p>
-                                </a>
-                            </li>
-                            <li class="separator hidden-lg"></li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-
 
             <div class="content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-10">
                             <div class="card">
                                 <div class="header">
-                                    <h4 class="title">My files</h4>
-                                    <p class="category">All files for "{{user.first_name}} {{user.last_name}}"</p>
+                                    <h4 class="title">Contact Support</h4>
+                                    <p class="category">Explain your problem</p>
                                 </div>
-                                <div class="content table-responsive table-full-width">
-                                    <table class="table table-hover table-striped">
-                                        <thead>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Created At</th>
-                                            <th>Path</th>
-                                        </thead>
-                                        <tbody>
-                                            {% for file in files %}
-                                            <tr>
-                                                <td>{{file.id}}</td>
-                                                <td>{{file.name}}</td>
-                                                <td>{{file.created_at}}</td>
-                                                <td>{{file.path}}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-
+                                <div class="content">
+                                    <form action="/contact_process" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="content" rows="15"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="document">Upload image:</label>
+                                            <input type="file" class="form-control-file" name="document" id="document"
+                                                required>
+                                            {%if errors.file_type%}
+                                            <small class="form-text error">{{errors.file_type}}</small>
+                                            {%endif%}
+                                            {%if errors.file_size%}
+                                            <small class="form-text error">{{errors.file_size}}</small>
+                                            {%endif%}
+                                            {% if errors.uploaded %}
+                                            <small class="form-text green">{{errors.uploaded}}</small>
+                                            {% endif %}
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Send</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
+
                     </div>
+
+
+
+
                 </div>
             </div>
 
@@ -187,6 +175,8 @@
 <script src="{% static 'assets/js/chartist.min.js' %}"></script>
 <!--  Notifications Plugin    -->
 <script src="{% static 'assets/js/bootstrap-notify.js' %}"></script>
+<!--  Google Maps Plugin    -->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
 <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 <script src="{% static 'assets/js/light-bootstrap-dashboard.js' %}"></script>
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
