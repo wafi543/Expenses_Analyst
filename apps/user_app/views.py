@@ -61,12 +61,10 @@ def registering(request):
         errors['confirm'] = 'Passwords does not match'
         context['errors'] = errors
 
-    try:
+    if User.objects.filter(email=request.POST['email']).exists():
         user = User.objects.get(email=request.POST['email'])
         errors['email'] = 'Email is already exist'
         context['errors'] = errors
-    except:
-        print('Email is not found')
 
     if not 'errors' in context:
         pw_hash = bcrypt.hashpw(
