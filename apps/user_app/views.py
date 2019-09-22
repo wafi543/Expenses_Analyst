@@ -70,7 +70,7 @@ def registering(request):
 
     if not 'errors' in context:
         pw_hash = bcrypt.hashpw(
-            request.POST['password'].encode(), bcrypt.gensalt())
+            request.POST['password'].encode('utf-8'), bcrypt.gensalt())
         new_user = User.objects.create(
             first_name=request.POST['fname'], last_name=request.POST['lname'], email=request.POST['email'], password=pw_hash)
         new_user.save()
@@ -89,14 +89,16 @@ def registering(request):
 def login(request):
     errors = {}
     context = {}
-    uInfo = {'email': request.POST['email']}
-    try:
+    if User.objects.filter(email=request.POST['email']).exists():
         user = User.objects.get(email=request.POST['email'])
         if bcrypt.checkpw(request.POST['password'].encode(), user.password.encode()):
             print("password match")
             request.session['uid'] = user.id
             return redirect('/')
         else:
+            uInfo = {
+                'email': request.POST['email'],
+            }
             errors['password'] = 'Password is invalid'
             context = {
                 'errors': errors,
@@ -104,7 +106,10 @@ def login(request):
             }
             print("failed password")
             return render(request, 'login.html', context)
-    except:
+    else:
+        uInfo = {
+            'email': request.POST['email'],
+        }
         errors['email'] = 'Entered email is not registered'
         context = {
             'errors': errors,
@@ -211,7 +216,8 @@ def upload_file(request):
         path = f"{uid}/{uid}_{time}.csv"
         fileStore.save(path, uploaded)
         user = User.objects.get(id=uid)
-        new_file = File.objects.create(name=request.POST['file_name'], path=path, user=user)
+        new_file = File.objects.create(
+            name=request.POST['file_name'], path=path, user=user)
         new_file.save()
 
         return redirect("/")
