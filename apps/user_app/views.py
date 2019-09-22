@@ -219,6 +219,11 @@ def upload_file(request):
             errors['file_type'] = "Uploaded file is not of type csv"
             request.session['dashboard_errors'] = errors
             return redirect('/')
+        if request.POST['file_name'] == '':
+            errors['file_name'] = 'File name is empty'
+            request.session['dashboard_errors'] = errors
+            return redirect('/')
+        
         fileStore = FileSystemStorage()
         file_path = f"{uid}/{uid}_{time}.csv"
         fileStore.save(file_path, uploaded)
@@ -253,3 +258,21 @@ def upload_file(request):
     errors['uploaded'] = 'File uploaded successfully'
     request.session['dashboard_errors'] = errors
     return redirect('/')
+
+
+def my_files(request):
+    if 'uid' in request.session:
+        uid = request.session['uid']
+        try:
+            user = User.objects.get(id=uid)
+            files = File.objects.filter(user=user).order_by('id')
+            context = {
+                'data': data,
+                'user': user,
+                'files': files,
+            }
+        except:
+            return HttpResponse('error loading user')
+        return render(request, 'my_files.html', context)
+    else:
+        return render(request, 'login.html')
