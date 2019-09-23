@@ -13,10 +13,13 @@ urlpatterns = [
     url(r'^update_profile$', views.update_profile),
     url(r'^upload_file$', views.upload_file),
     url(r'^my_files$', views.my_files),
+    url(r'^my_files/(?P<id>[0-9]+)/view$', views.view_file),
+    url(r'^my_files/(?P<id>[0-9]+)/delete$', views.delete_file),
     url(r'^contact$', views.contact),
     url(r'^contact_process$', views.contact_process),
     url(r'^my_reports$', views.my_reports),
-
+    url(r'^my_reports/(?P<id>[0-9]+)/view$', views.view_report),
+    url(r'^my_reports/(?P<id>[0-9]+)/delete$', views.delete_report),
 ]
 
 if settings.DEBUG:
