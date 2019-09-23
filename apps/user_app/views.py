@@ -8,6 +8,7 @@ import datetime
 import csv
 import json
 import requests
+import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
@@ -18,6 +19,7 @@ def index(request):
         uid = request.session['uid']
         try:
             user = User.objects.get(id=uid)
+            reports = Report.objects.filter(user=user).order_by('id')
             context = {
                 'data': data,
                 'user': user,
@@ -34,6 +36,8 @@ def index(request):
         return render(request, 'dashboard.html', context)
     else:
         return render(request, 'login.html')
+
+
 
 
 def logout(request):
@@ -189,11 +193,6 @@ def update_profile(request):
     except:
         HttpResponse('User id not found')
 
-
-def add_file(request):
-    return render(request, 'add_file.html')
-
-
 def upload_file(request):
     errors = {}
     uid = str(request.session['uid'])
@@ -274,6 +273,34 @@ def my_files(request):
     else:
         return render(request, 'login.html')
 
+def view_file (request, id):
+    if 'uid' in request.session:
+        uid = request.session['uid']
+        try:
+            file = File.objects.get(id=id)
+            f = open(f'apps/user_app/static/files/{file.path}', 'r')
+            reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
+            out = json.dumps([row for row in reader])
+        except:
+            return HttpResponse('Error. File not found')
+        return HttpResponse(file.path + '\n\n\n' + out)
+    else:
+        return render(request, 'login.html')
+
+def delete_file (request, id):
+    if 'uid' in request.session:
+        uid = request.session['uid']
+        try:
+            print('dfg')
+            file = File.objects.get(id=id)
+            os.remove(f'apps/user_app/static/files/{file.path}')
+            file.delete()
+        except:
+            print('File not found')
+        return redirect('/my_files')
+    else:
+        return render(request, 'login.html')
+
 def contact(request):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -338,5 +365,33 @@ def my_reports(request):
         except:
             return HttpResponse('error loading user')
         return render(request, 'my_reports.html', context)
+    else:
+        return render(request, 'login.html')
+
+def view_report (request, id):
+    if 'uid' in request.session:
+        uid = request.session['uid']
+        try:
+            report = Report.objects.get(id=id)
+            f = open(f'apps/user_app/static/reports/{report.path}', 'r')
+            reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
+            out = json.dumps([row for row in reader])
+        except:
+            return HttpResponse('Error. Report not found')
+        return HttpResponse(report.path + '\n\n\n' + out)
+    else:
+        return render(request, 'login.html')
+
+def delete_report (request, id):
+    if 'uid' in request.session:
+        uid = request.session['uid']
+        try:
+            print('dfg')
+            report = Report.objects.get(id=id)
+            os.remove(f'apps/user_app/static/reports/{report.path}')
+            report.delete()
+        except:
+            print('Report not found')
+        return redirect('/my_reports')
     else:
         return render(request, 'login.html')
