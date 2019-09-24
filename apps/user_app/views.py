@@ -146,34 +146,30 @@ def profile(request):
 
 
 def update_profile(request):
+    request.session['errors']= {}
     try:
         user = User.objects.get(id=request.POST['id'])
-        context = {}
-        errors = {}
         if not NAME_REGEX.match(request.POST['fname']):
-            errors['fname'] = 'First name must contain at least two letters and contains only letters'
-            context['errors'] = errors
+            request.session['errors']['fname'] = 'First name must contain at least two letters and contains only letters'
         if not NAME_REGEX.match(request.POST['lname']):
-            errors['lname'] = 'Last name must contain at least two letters and contains only letters'
-            context['errors'] = errors
+            request.session['errors']['lname'] = 'Last name must contain at least two letters and contains only letters'
         if not EMAIL_REGEX.match(request.POST['email']):
-            errors['email'] = 'Invalid email address'
-            context['errors'] = errors
+            request.session['errors']['email'] = 'Invalid email address'
+            return redirect('/profile')
+
         if len(request.POST['password']) > 0:
             if len(request.POST['password']) < 8:
-                errors['password'] = 'Your password must be at least 8 characters'
-                context['errors'] = errors
+                request.session['errors']['password'] = 'Your password must be at least 8 characters'
             if request.POST['password'] != request.POST['confirm']:
-                errors['confirm'] = 'Passwords does not match'
-                context['errors'] = errors
+                request.session['errors']['confirm'] = 'Passwords does not match'
 
-        check = User.objects.get(email=request.POST['email'])
-        print('id: '+str(check.id)+', post_id: '+request.POST['id'])
-        if str(check.id) != request.POST['id']:
-            errors['email'] = 'Email is already exist'
-            context['errors'] = errors
+        if(user.email != request.POST['email']):
+            if User.objects.filter(email=request.POST['email']).exists():
+                request.session['errors']['email'] = 'Email is already exist'
+                return redirect('/profile')
+            
 
-        if not 'errors' in context:
+        if not 'errors' in request.session:
             user.first_name = request.POST['fname']
             user.last_name = request.POST['lname']
             user.email = request.POST['email']
@@ -183,13 +179,9 @@ def update_profile(request):
                 user.password = pw_hash
             user.save()
             errors['done'] = 'Profile has been updated successfully'
-            context['errors'] = errors
-            context['user'] = user
-
-            return render(request, 'profile.html', context)
+            return redirect('/profile')
         else:
-            context['user'] = user
-            return render(request, 'profile.html', context)
+            return redirect('/profile')
     except:
         HttpResponse('User id not found')
 
