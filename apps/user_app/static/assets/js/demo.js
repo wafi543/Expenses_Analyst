@@ -199,7 +199,7 @@ demo = {
 
         var dataPreferences = {
             series: [
-                [25, 30, 20, 25]
+                [25, 30, 20, 45]
             ]
         };
 
@@ -214,11 +214,22 @@ demo = {
             }
         };
 
+        var str = document.getElementById('typeBased').value;
+        console.log(str)
+        var typeBased = JSON.parse(str);
+        var keys = []
+        var values = []
+        console.log(typeBased)
+
+        for (var x in typeBased) {
+          keys.push(x+': '+typeBased[x])
+          values.push(typeBased[x])
+        }
         Chartist.Pie('#chartPreferences', dataPreferences, optionsPreferences);
 
         Chartist.Pie('#chartPreferences', {
-          labels: ['62%','32%','6%'],
-          series: [62, 32, 6]
+          labels: keys,
+          series: values
         });
     },
 
