@@ -14,25 +14,27 @@
 <body>
     <div class="login-page">
         <div class="form">
+
+            <img id="logo" src="{% static 'images/logo@3x.png' %}" />
             <form class="login-form" action="/registering" method="POST">
                 {% csrf_token %}
-                <input type="text" placeholder="First Name" name="fname"/>
+                <input type="text" placeholder="First Name" name="fname" value="{{uInfo.fname}}" />
                 {% if 'fname' in errors %}
                 <p class="error">{{errors.fname}}</p>
                 {% endif %}
-                <input type="text" placeholder="Last Name" name="lname"/>
+                <input type="text" placeholder="Last Name" name="lname" value="{{uInfo.lname}}" />
                 {% if 'lname' in errors %}
                 <p class="error">{{errors.lname}}</p>
                 {% endif %}
-                <input type="text" placeholder="Email Address" name="email"/>
+                <input type="text" placeholder="Email Address" name="email" value="{{uInfo.email}}" />
                 {% if 'email' in errors %}
                 <p class="error">{{errors.email}}</p>
                 {% endif %}
-                <input type="password" placeholder="Password" name="password"/>
+                <input type="password" placeholder="Password" name="password" />
                 {% if 'password' in errors %}
                 <p class="error">{{errors.password}}</p>
                 {% endif %}
-                <input type="password" placeholder="Confirm Password" name="confirm"/>
+                <input type="password" placeholder="Confirm Password" name="confirm" />
                 {% if 'confirm' in errors %}
                 <p class="error">{{errors.confirm}}</p>
                 {% endif %}

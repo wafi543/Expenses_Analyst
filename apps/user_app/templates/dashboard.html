@@ -1,291 +1,294 @@
-<!-- 
-=========================================================
- Light Bootstrap Dashboard - v2.0.1
-=========================================================
 
- Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard
- Copyright 2019 Creative Tim (https://www.creative-tim.com)
- Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard/blob/master/LICENSE)
-
- Coded by Creative Tim
-
-=========================================================
-
- The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.  -->
 {%load static %}
 <!DOCTYPE html>
 
+=======
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'bs/assets/img/apple-icon.png' %}">
-    <link rel="icon" type="image/png" href="{% static 'bs/assets/img/favicon.ico' %}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>Light Bootstrap Dashboard - Free Bootstrap 4 Admin Dashboard by Creative Tim</title>
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
-        name='viewport' />
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    <title>{{data.app_name}}</title>
+
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'assets/img/favicon.ico' %}">
+
+    <!-- Bootstrap core CSS  -->
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <!-- Animation library for notifications   -->
+    <link href="{% static 'assets/css/animate.min.css' %}" rel="stylesheet" />
+    <!--  Light Bootstrap Table core CSS    -->
+    <link href="{% static 'assets/css/light-bootstrap-dashboard.css' %}" rel="stylesheet" />
+    <!-- Otherss -->
+    <link href="{% static 'assets/css/pe-icon-7-stroke.css' %}" rel="stylesheet" />
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link href="{% static 'assets/css/demo.css' %}" rel="stylesheet" />
+
     <!--     Fonts and icons     -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
-    <!-- CSS Files -->
-    <link href="{% static 'bs/assets/css/bootstrap.min.css' %}" rel="stylesheet" />
-    <link href="{% static 'bs/assets/css/light-bootstrap-dashboard.css' %}?v=2.0.0" rel="stylesheet" />
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="{% static 'bs/assets/css/demo.css' %}" rel="stylesheet" />
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+
+    <style>
+        .error {
+            color: red;
+        }
+        .green {
+            color: green
+        }
+    </style>
 </head>
 
 <body>
+
     <div class="wrapper">
-        <div class="sidebar" data-image="{% static 'bs/assets/img/sidebar-5.jpg' %}">
-            <!--
-         Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
- 
-         Tip 2: you can also add an image using data-image tag
-     -->
+        <div class="sidebar" data-color="purple" data-image="{% static 'assets/img/sidebar-5.jpg' %}">
             <div class="sidebar-wrapper">
                 <div class="logo">
-                    <a href="./" class="simple-text">
-                        Creative Tim
+                    <a href="http://www.creative-tim.com" class="simple-text">
+                        {{data.app_name}}
                     </a>
                 </div>
+
                 <ul class="nav">
-                    <li>
-                        <a class="nav-link" href="./show_users">
-                            <i class="nc-icon nc-circle-09"></i>
-                            <p> Users</p>
+                    <li class="active">
+                        <a href="">
+                            <i class="pe-7s-graph"></i>
+                            <p>Dashboard</p>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="./show_files">
-                            <i class="nc-icon nc-notes"></i>
-                            <p>Files </p>
+                        <a href="/profile">
+                            <i class="pe-7s-user"></i>
+                            <p>My Profile</p>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="./show_reports">
-                            <i class="nc-icon nc-paper-2"></i>
-                            <p>Reports</p>
+                        <a href="/my_files">
+                            <i class="pe-7s-file"></i>
+                            <p>My Files</p>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="./notifications.html">
-                            <i class="nc-icon nc-bell-55"></i>
-                            <p>Messages</p>
+                        <a href="/my_reports">
+                            <i class="pe-7s-news-paper"></i>
+                            <p>My Reports</p>
                         </a>
                     </li>
-                    <li class="nav-item active active-pro">
-                        <a class="nav-link active" href="upgrade.html">
-                            <i class="nc-icon nc-alien-33"></i>
-                            <p>Upgrade to PRO</p>
+                    <li class="active-pro">
+                        <a href="/contact">
+                            <i class="pe-7s-chat"></i>
+                            <p>Contact Support</p>
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
+
         <div class="main-panel">
-            <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+            <nav class="navbar navbar-default navbar-fixed">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#pablo"> Dashboard </a>
-                    <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-                        aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-bar burger-lines"></span>
-                        <span class="navbar-toggler-bar burger-lines"></span>
-                        <span class="navbar-toggler-bar burger-lines"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-end" id="navigation">
-                        <ul class="nav navbar-nav mr-auto">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link" data-toggle="dropdown">
-                                    <i class="nc-icon nc-palette"></i>
-                                    <span class="d-lg-none">Dashboard</span>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#navigation-example-2">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Dashboard</a>
+                    </div>
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <p class="navbar-brand">Hello, {{user.first_name}}</p>
+                            </li>
+                            <li>
+                                <a href="/logout">
+                                    <p>Log out</p>
                                 </a>
                             </li>
-                            <li class="dropdown nav-item">
-                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                                    <i class="nc-icon nc-planet"></i>
-                                    <span class="notification">5</span>
-                                    <span class="d-lg-none">Notification</span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Notification 1</a>
-                                    <a class="dropdown-item" href="#">Notification 2</a>
-                                    <a class="dropdown-item" href="#">Notification 3</a>
-                                    <a class="dropdown-item" href="#">Notification 4</a>
-                                    <a class="dropdown-item" href="#">Another notification</a>
-                                </ul>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nc-icon nc-zoom-split"></i>
-                                    <span class="d-lg-block">&nbsp;Search</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#pablo">
-                                    <span class="no-icon">Account</span>
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="http://example.com"
-                                    id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    <span class="no-icon">Dropdown</span>
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                    <div class="divider"></div>
-                                    <a class="dropdown-item" href="#">Separated link</a>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#pablo">
-                                    <span class="no-icon">Log out</span>
-                                </a>
-                            </li>
+                            <li class="separator hidden-lg"></li>
                         </ul>
                     </div>
                 </div>
             </nav>
-            <!-- End Navbar -->
+
+
             <div class="content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="card ">
-                                <div class="card-header ">
-                                    <h4 class="card-title">Email Statistics</h4>
-                                    <p class="card-category">Last Campaign Performance</p>
+                        <div class="col-md-7">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">New Report</h4>
+                                    <p class="category">Adding new file then create its report</p>
                                 </div>
-                                <div class="card-body ">
+                                <div class="content">
+                                    <form action="/upload_file" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="file_name">File name:</label>
+                                            <input type="text" class="form-control" id="file_name" name="file_name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="document">Select file:</label>
+                                            <input type="file" class="form-control-file" name="document" id="document"
+                                                required>
+                                            {%if errors.file_type%}
+                                            <small class="form-text error">{{errors.file_type}}</small>
+                                            {%endif%}
+                                            {%if errors.file_size%}
+                                            <small class="form-text error">{{errors.file_size}}</small>
+                                            {%endif%}
+                                            {%if errors.file_name%}
+                                            <small class="form-text error">{{errors.file_name}}</small>
+                                            {%endif%}
+                                            {% if errors.uploaded %}
+                                            <small class="form-text green">{{errors.uploaded}}</small>
+                                            {% endif %}
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+
+                                <div class="header">
+                                    <h4 class="title">Email Statistics</h4>
+                                    <p class="category">Last Campaign Performance</p>
+                                </div>
+                                <div class="content">
                                     <div id="chartPreferences" class="ct-chart ct-perfect-fourth"></div>
-                                    <div class="legend">
-                                        <i class="fa fa-circle text-info"></i> Open
-                                        <i class="fa fa-circle text-danger"></i> Bounce
-                                        <i class="fa fa-circle text-warning"></i> Unsubscribe
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-clock-o"></i> Campaign sent 2 days ago
+
+                                    <div class="footer">
+                                        <div class="legend">
+                                            <i class="fa fa-circle text-info"></i> Open
+                                            <i class="fa fa-circle text-danger"></i> Bounce
+                                            <i class="fa fa-circle text-warning"></i> Unsubscribe
+                                        </div>
+                                        <hr>
+                                        <div class="stats">
+                                            <i class="fa fa-clock-o"></i> Campaign sent 2 days ago
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-8">
-                            <div class="card ">
-                                <div class="card-header ">
-                                    <h4 class="card-title">Users Behavior</h4>
-                                    <p class="card-category">24 Hours performance</p>
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">Users Behavior</h4>
+                                    <p class="category">24 Hours performance</p>
                                 </div>
-                                <div class="card-body ">
+                                <div class="content">
                                     <div id="chartHours" class="ct-chart"></div>
-                                </div>
-                                <div class="card-footer ">
-                                    <div class="legend">
-                                        <i class="fa fa-circle text-info"></i> Open
-                                        <i class="fa fa-circle text-danger"></i> Click
-                                        <i class="fa fa-circle text-warning"></i> Click Second Time
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-history"></i> Updated 3 minutes ago
+                                    <div class="footer">
+                                        <div class="legend">
+                                            <i class="fa fa-circle text-info"></i> Open
+                                            <i class="fa fa-circle text-danger"></i> Click
+                                            <i class="fa fa-circle text-warning"></i> Click Second Time
+                                        </div>
+                                        <hr>
+                                        <div class="stats">
+                                            <i class="fa fa-history"></i> Updated 3 minutes ago
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card ">
-                                <div class="card-header ">
-                                    <h4 class="card-title">2017 Sales</h4>
-                                    <p class="card-category">All products including Taxes</p>
+                                <div class="header">
+                                    <h4 class="title">2014 Sales</h4>
+                                    <p class="category">All products including Taxes</p>
                                 </div>
-                                <div class="card-body ">
+                                <div class="content">
                                     <div id="chartActivity" class="ct-chart"></div>
-                                </div>
-                                <div class="card-footer ">
-                                    <div class="legend">
-                                        <i class="fa fa-circle text-info"></i> Tesla Model S
-                                        <i class="fa fa-circle text-danger"></i> BMW 5 Series
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-check"></i> Data information certified
+
+                                    <div class="footer">
+                                        <div class="legend">
+                                            <i class="fa fa-circle text-info"></i> Tesla Model S
+                                            <i class="fa fa-circle text-danger"></i> BMW 5 Series
+                                        </div>
+                                        <hr>
+                                        <div class="stats">
+                                            <i class="fa fa-check"></i> Data information certified
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-6">
-                            <div class="card  card-tasks">
-                                <div class="card-header ">
-                                    <h4 class="card-title">Tasks</h4>
-                                    <p class="card-category">Backend development</p>
+                            <div class="card ">
+                                <div class="header">
+                                    <h4 class="title">Tasks</h4>
+                                    <p class="category">Backend development</p>
                                 </div>
-                                <div class="card-body ">
+                                <div class="content">
                                     <div class="table-full-width">
                                         <table class="table">
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    value="">
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
+                                                        <div class="checkbox">
+                                                            <input id="checkbox1" type="checkbox">
+                                                            <label for="checkbox1"></label>
                                                         </div>
                                                     </td>
                                                     <td>Sign contract for "What are conference organizers afraid of?"
                                                     </td>
                                                     <td class="td-actions text-right">
                                                         <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-link">
+                                                            class="btn btn-info btn-simple btn-xs">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
                                                         <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-link">
+                                                            class="btn btn-danger btn-simple btn-xs">
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" value=""
-                                                                    checked>
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
+                                                        <div class="checkbox">
+                                                            <input id="checkbox2" type="checkbox" checked>
+                                                            <label for="checkbox2"></label>
                                                         </div>
                                                     </td>
                                                     <td>Lines From Great Russian Literature? Or E-mails From My Boss?
                                                     </td>
                                                     <td class="td-actions text-right">
                                                         <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-link">
+                                                            class="btn btn-info btn-simple btn-xs">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
                                                         <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-link">
+                                                            class="btn btn-danger btn-simple btn-xs">
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" value=""
-                                                                    checked>
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
+                                                        <div class="checkbox">
+                                                            <input id="checkbox3" type="checkbox">
+                                                            <label for="checkbox3"></label>
                                                         </div>
                                                     </td>
                                                     <td>Flooded: One year later, assessing what was lost and what was
@@ -293,76 +296,68 @@
                                                     </td>
                                                     <td class="td-actions text-right">
                                                         <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-link">
+                                                            class="btn btn-info btn-simple btn-xs">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
                                                         <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-link">
+                                                            class="btn btn-danger btn-simple btn-xs">
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" checked>
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
+                                                        <div class="checkbox">
+                                                            <input id="checkbox4" type="checkbox" checked>
+                                                            <label for="checkbox4"></label>
                                                         </div>
                                                     </td>
                                                     <td>Create 4 Invisible User Experiences you Never Knew About</td>
                                                     <td class="td-actions text-right">
                                                         <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-link">
+                                                            class="btn btn-info btn-simple btn-xs">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
                                                         <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-link">
+                                                            class="btn btn-danger btn-simple btn-xs">
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    value="">
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
+                                                        <div class="checkbox">
+                                                            <input id="checkbox5" type="checkbox">
+                                                            <label for="checkbox5"></label>
                                                         </div>
                                                     </td>
                                                     <td>Read "Following makes Medium better"</td>
                                                     <td class="td-actions text-right">
                                                         <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-link">
+                                                            class="btn btn-info btn-simple btn-xs">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
                                                         <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-link">
+                                                            class="btn btn-danger btn-simple btn-xs">
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <div class="form-check">
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" value=""
-                                                                    disabled>
-                                                                <span class="form-check-sign"></span>
-                                                            </label>
+                                                        <div class="checkbox">
+                                                            <input id="checkbox6" type="checkbox" checked>
+                                                            <label for="checkbox6"></label>
                                                         </div>
                                                     </td>
                                                     <td>Unfollow 5 enemies from twitter</td>
                                                     <td class="td-actions text-right">
                                                         <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-link">
+                                                            class="btn btn-info btn-simple btn-xs">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
                                                         <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-link">
+                                                            class="btn btn-danger btn-simple btn-xs">
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </td>
@@ -370,11 +365,12 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
-                                <div class="card-footer ">
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+
+                                    <div class="footer">
+                                        <hr>
+                                        <div class="stats">
+                                            <i class="fa fa-history"></i> Updated 3 minutes ago
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -382,10 +378,12 @@
                     </div>
                 </div>
             </div>
+
+
             <footer class="footer">
                 <div class="container-fluid">
-                    <nav>
-                        <ul class="footer-menu">
+                    <nav class="pull-left">
+                        <ul>
                             <li>
                                 <a href="#">
                                     Home
@@ -407,120 +405,48 @@
                                 </a>
                             </li>
                         </ul>
-                        <p class="copyright text-center">
-                            ©
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script>
-                            <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
-                        </p>
                     </nav>
+                    <p class="copyright pull-right">
+                        &copy;
+                        <script>document.write(new Date().getFullYear())</script> <a
+                            href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
+                    </p>
                 </div>
             </footer>
+
         </div>
     </div>
-    <!--   -->
-    <!-- <div class="fixed-plugin">
-     <div class="dropdown show-dropdown">
-         <a href="#" data-toggle="dropdown">
-             <i class="fa fa-cog fa-2x"> </i>
-         </a>
- 
-         <ul class="dropdown-menu">
-             <li class="header-title"> Sidebar Style</li>
-             <li class="adjustments-line">
-                 <a href="javascript:void(0)" class="switch-trigger">
-                     <p>Background Image</p>
-                     <label class="switch">
-                         <input type="checkbox" data-toggle="switch" checked="" data-on-color="primary" data-off-color="primary"><span class="toggle"></span>
-                     </label>
-                     <div class="clearfix"></div>
-                 </a>
-             </li>
-             <li class="adjustments-line">
-                 <a href="javascript:void(0)" class="switch-trigger background-color">
-                     <p>Filters</p>
-                     <div class="pull-right">
-                         <span class="badge filter badge-black" data-color="black"></span>
-                         <span class="badge filter badge-azure" data-color="azure"></span>
-                         <span class="badge filter badge-green" data-color="green"></span>
-                         <span class="badge filter badge-orange" data-color="orange"></span>
-                         <span class="badge filter badge-red" data-color="red"></span>
-                         <span class="badge filter badge-purple active" data-color="purple"></span>
-                     </div>
-                     <div class="clearfix"></div>
-                 </a>
-             </li>
-             <li class="header-title">Sidebar Images</li>
- 
-             <li class="active">
-                 <a class="img-holder switch-trigger" href="javascript:void(0)">
-                     <img src="../assets/img/sidebar-1.jpg" alt="" />
-                 </a>
-             </li>
-             <li>
-                 <a class="img-holder switch-trigger" href="javascript:void(0)">
-                     <img src="../assets/img/sidebar-3.jpg" alt="" />
-                 </a>
-             </li>
-             <li>
-                 <a class="img-holder switch-trigger" href="javascript:void(0)">
-                     <img src="..//assets/img/sidebar-4.jpg" alt="" />
-                 </a>
-             </li>
-             <li>
-                 <a class="img-holder switch-trigger" href="javascript:void(0)">
-                     <img src="../assets/img/sidebar-5.jpg" alt="" />
-                 </a>
-             </li>
- 
-             <li class="button-container">
-                 <div class="">
-                     <a href="http://www.creative-tim.com/product/light-bootstrap-dashboard" target="_blank" class="btn btn-info btn-block btn-fill">Download, it's free!</a>
-                 </div>
-             </li>
- 
-             <li class="header-title pro-title text-center">Want more components?</li>
- 
-             <li class="button-container">
-                 <div class="">
-                     <a href="http://www.creative-tim.com/product/light-bootstrap-dashboard-pro" target="_blank" class="btn btn-warning btn-block btn-fill">Get The PRO Version!</a>
-                 </div>
-             </li>
- 
-             <li class="header-title" id="sharrreTitle">Thank you for sharing!</li>
- 
-             <li class="button-container">
-                 <button id="twitter" class="btn btn-social btn-outline btn-twitter btn-round sharrre"><i class="fa fa-twitter"></i> · 256</button>
-                 <button id="facebook" class="btn btn-social btn-outline btn-facebook btn-round sharrre"><i class="fa fa-facebook-square"></i> · 426</button>
-             </li>
-         </ul>
-     </div>
- </div>
-  -->
+
+
 </body>
+
 <!--   Core JS Files   -->
-<script src="{% static 'bs/assets/js/core/jquery.3.2.1.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'bs/assets/js/core/popper.min.js' %}" type="text/javascript"></script>
-<script src="{% static 'bs/assets/js/core/bootstrap.min.js' %}" type="text/javascript"></script>
-<!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
-<script src="{% static 'bs/assets/js/plugins/bootstrap-switch.js' %}"></script>
+<script src="{% static 'assets/js/jquery.3.2.1.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}" type="text/javascript"></script>
+<!--  Charts Plugin -->
+<script src="{% static 'assets/js/chartist.min.js' %}"></script>
+<!--  Notifications Plugin    -->
+<script src="{% static 'assets/js/bootstrap-notify.js' %}"></script>
 <!--  Google Maps Plugin    -->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-<!--  Chartist Plugin  -->
-<script src="{% static 'bs/assets/js/plugins/chartist.min.js' %}"></script>
-<!--  Notifications Plugin    -->
-<script src="{% static 'bs/assets/js/plugins/bootstrap-notify.js' %}"></script>
-<!-- Control Center for Light Bootstrap Dashboard: scripts for the example pages etc -->
-<script src="{% static 'bs/assets/js/light-bootstrap-dashboard.js' %}?v=2.0.0 " type="text/javascript"></script>
-<!-- Light Bootstrap Dashboard DEMO methods, don't include it in your project! -->
-<script src="{% static 'bs/assets/js/demo.js' %}"></script>
+<!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
+<script src="{% static 'assets/js/light-bootstrap-dashboard.js' %}"></script>
+<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
+<script src="{% static 'assets/js/demo.js' %}"></script>
+
 <script type="text/javascript">
     $(document).ready(function () {
-        // Javascript method's body can be found in assets/js/demos.js
-        demo.initDashboardPageCharts();
 
-        demo.showNotification();
+        demo.initChartist();
+        /*
+        $.notify({
+            icon: 'pe-7s-gift',
+            message: "Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for every web developer."
+
+        },{
+            type: 'info',
+            timer: 4000
+        }); */
 
     });
 </script>

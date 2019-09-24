@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Add file</title>
+    <style>
+        .error{
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {{request.session.uid}}
+            </div>
+            <div class="col">
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+        <div class="row">
+            <form action="/upload_file" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="file_name">File name:</label>
+                    <input type="text" class="form-control" id="file_name" name="file_name">
+                </div>
+                <div class="form-group">
+                    <label for="document">Select file:</label>
+                    <input type="file" class="form-control-file" name="document" id="document" required>
+                    {%if errors.file_type%}
+                        <small class="form-text error">{{errors.file_type}}</small>
+                    {%endif%}
+                    {%if errors.file_size%}
+                        <small class="form-text error">{{errors.file_size}}</small>
+                    {%endif%}
+                    
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
