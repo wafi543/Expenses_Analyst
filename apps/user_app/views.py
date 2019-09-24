@@ -242,9 +242,6 @@ def upload_file(request):
 
     report_path = f"{uid}_{time}.json"
     # If the file name exists, write a JSON string into the file.
-    # with open(f'apps/user_app/static/reports/{report_path}', 'w') as json_file:
-    #     json.dump(r.text, json_file)
-    # Save the JSON
     f = open(f'apps/user_app/static/reports/{report_path}', 'w')
     f.write(r.text)
     # Save report to the database
@@ -278,12 +275,20 @@ def view_file (request, id):
         uid = request.session['uid']
         try:
             file = File.objects.get(id=id)
+            
             f = open(f'apps/user_app/static/files/{file.path}', 'r')
             reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
             out = json.dumps([row for row in reader])
+            parsed_json = (json.loads(out))
+            del parsed_json[0]
+            context={
+                'file': file,
+                'json': parsed_json,
+            }
         except:
             return HttpResponse('Error. File not found')
-        return HttpResponse(file.path + '\n\n\n' + out)
+        return render(request, 'view_file.html', context)
+        # return HttpResponse(file.path + '\n\n\n' + out)
     else:
         return render(request, 'login.html')
 
