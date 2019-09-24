@@ -22,16 +22,29 @@ def index(request):
             'data': data,
             'user': user,
         }
+        # comment
         try:
-            report = Report.objects.filter(user=user).last()
-            with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report.path}', 'r') as f:
-                report_data = json.load(f)
-                typeBased = report_data['typeBased']['amount']
-                typeBased = json.dumps(typeBased)
-                context['typeBased'] = typeBased,
-                context['reports'] = report_data,
+            # get last report
+            last = Report.objects.filter(user=user).last()
+            with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{last.path}', 'r') as f:
+                data_str = json.load(f)
+                last_json = json.dumps(data_str)
+                context['last_report'] = last
+                context['last_json'] = last_json
+                context['last_year'] = str(data_str['year'])
         except:
-            print('no reports')
+            print('Error loading last report')
+        try:
+            reports = Report.objects.filter(user=user)
+            result = {}
+            for report in reports:
+                with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report.path}', 'r') as f:
+                    report_data = json.load(f)
+                    result[report.id] = report_data
+            result = json.dumps(result)
+            context['result'] = result
+        except:
+            print('Error loading all reports')
 
         if 'dashboard_errors' in request.session:
             context['errors'] = request.session['dashboard_errors']
@@ -238,7 +251,7 @@ def upload_file(request):
     # send file to API
     f = open(f'apps/user_app/static/files/{file_path}', 'r')
 
-    reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
+    reader = csv.DictReader(f, fieldnames=("date", "type", "amount", "income"))
     out = json.dumps([row for row in reader])
 
     print(out)
@@ -302,10 +315,9 @@ def delete_file (request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
         try:
-            print('dfg')
             file = File.objects.get(id=id)
-            os.remove(f'apps/user_app/static/files/{file.path}')
             file.delete()
+            os.remove(f'apps/user_app/static/files/{file.path}')
         except:
             print('File not found')
         return redirect('/my_files')

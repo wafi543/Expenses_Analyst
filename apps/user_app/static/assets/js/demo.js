@@ -1,6 +1,7 @@
 type = ['','info','success','warning','danger'];
 
 
+
 demo = {
     initPickColor: function(){
         $('.pick-class-label').click(function(){
@@ -129,20 +130,38 @@ demo = {
     },
 
     initChartist: function(){
-
+        // Type based:
+        var str = document.getElementById('last_json').value;
+        console.log(str)
+        var last_json = JSON.parse(str);
+        var typeBased = last_json['typeBased']['amount'];
+        var monthBased = last_json['monthBased']['amount'];
+        console.log(typeBased)
+        console.log(monthBased)
+        
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        var last_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        var monthsDict = {'1':'Jan', '2':'Feb', '3':'Mar', '4':'Apr', '5':'May', '6':'Jun', '7':'Jul', '8':'Aug', '9':'Sep', '10':'Oct', '11':'Nov', '12':'Dec'}
+        var last_max = 0
+        for (var x=1; x <= last_values.length; x++) {
+          console.log('x: ' + x + ', monthBased[x]: ' + monthBased[x] + ', monthsDict[x]: ' + monthsDict[x] + ', months[x-1]: ' + months[x-1])
+          if (monthBased[x] != null) {
+            if (monthBased[x] > last_max) {last_max = monthBased[x]}
+            last_values[x-1] = monthBased[x]
+          }
+        }
+        console.log(last_json['maximum'])
         var dataSales = {
-          labels: ['9:00AM', '12:00AM', '3:00PM', '6:00PM', '9:00PM', '12:00PM', '3:00AM', '6:00AM'],
+          labels: months,
           series: [
-             [287, 385, 490, 492, 554, 586, 698, 695, 752, 788, 846, 944],
-            [67, 152, 143, 240, 287, 335, 435, 437, 539, 542, 544, 647],
-            [23, 113, 67, 108, 190, 239, 307, 308, 439, 410, 410, 509]
+            last_values,
           ]
         };
 
         var optionsSales = {
           lineSmooth: false,
           low: 0,
-          high: 800,
+          high: last_max,
           showArea: true,
           height: "245px",
           axisX: {
@@ -214,26 +233,29 @@ demo = {
             }
         };
 
-        var str = document.getElementById('typeBased').value;
-        console.log(str)
-        var typeBased = JSON.parse(str);
-        var keys = []
-        var values = []
-        console.log(typeBased)
-
+        var last_type_keys = []
+        var last_type_values = []
+        var count = 1
+        var html_typeBased = ''
         for (var x in typeBased) {
-          keys.push(x+': '+typeBased[x])
-          values.push(typeBased[x])
+          last_type_keys.push(typeBased[x])
+          last_type_values.push(typeBased[x])
+          html_typeBased += '<i class="point color'+count+'"></i> '+x+'  '
+          count++
         }
-        Chartist.Pie('#chartPreferences', dataPreferences, optionsPreferences);
+        count = 0
+        document.getElementById("last_report_labels").innerHTML = html_typeBased;
 
-        Chartist.Pie('#chartPreferences', {
-          labels: keys,
-          series: values
+        Chartist.Pie('#lastReport', dataPreferences, optionsPreferences);
+
+        Chartist.Pie('#lastReport', {
+          labels: last_type_keys,
+          series: last_type_values
         });
+
     },
 
-    initGoogleMaps: function(){
+    /*initGoogleMaps: function(){
         var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
         var mapOptions = {
           zoom: 13,
@@ -251,7 +273,7 @@ demo = {
 
         // To add the marker to the map, call setMap();
         marker.setMap(map);
-    },
+    },*/
 
 	showNotification: function(from, align){
     	color = Math.floor((Math.random() * 4) + 1);
