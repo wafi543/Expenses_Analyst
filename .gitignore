@@ -1,4 +1,12 @@
 
+
+/apps/user_app/__pycache__/*
+/Expenses_Analyst/__pycache__/*
+/apps/user_app/migrations/__pycache__/*
+/__pycache__/*
+/apps/user_app/static/files/*
+/apps/user_app/static/reports/*
+
 # Created by https://www.gitignore.io/api/macos
 # Edit at https://www.gitignore.io/?templates=macos
 
@@ -31,5 +39,6 @@ Temporary Items
 .apdisk
 
 # End of https://www.gitignore.io/api/macos
-__pycache__
+*.pyc
+
 *.pyc
