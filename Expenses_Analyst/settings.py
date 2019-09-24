@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'apps.user_app',
+    'apps.admin_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,9 +78,9 @@ WSGI_APPLICATION = 'Expenses_Analyst.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'expenses_analyst',
+        'NAME': 'Expenses_analyst',
         'USER': 'postgres',
-        'PASSWORD':'postgres',
+        'PASSWORD':'1234',
         'HOST': 'localhost',
         'POST': '5432',
     }

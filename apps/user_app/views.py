@@ -13,6 +13,7 @@ def index(request):
         return HttpResponse('success logged in, your id is: '+str(request.session['uid']))
     else:
         print('sdf')
+
         return render(request, 'login.html')
 
 def register(request):
@@ -82,3 +83,17 @@ def login(request):
                 'errors':errors
             }
             return render(request, 'login.html', context)
+
+def index_admin(request):
+    return render(request, 'dashboard.html')
+
+def users(request):
+    args= {'user': request.user_app_user}
+    return render(request, 'show_users.html',args)
+
+def files(request):
+    return render(request, 'show_files.html')
+
+def reports(request):
+  #  args= {'user': request.User}
+    return render(request, 'show_reports.html')
