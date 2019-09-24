@@ -17,15 +17,34 @@ NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
 def index(request):
     if 'uid' in request.session:
         uid = request.session['uid']
+        user = User.objects.get(id=uid)
+        context = {
+            'data': data,
+            'user': user,
+        }
+        # comment
         try:
-            user = User.objects.get(id=uid)
-            reports = Report.objects.filter(user=user).order_by('id')
-            context = {
-                'data': data,
-                'user': user,
-            }
+            # get last report
+            last = Report.objects.filter(user=user).last()
+            with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{last.path}', 'r') as f:
+                data_str = json.load(f)
+                last_json = json.dumps(data_str)
+                context['last_report'] = last
+                context['last_json'] = last_json
+                context['last_year'] = str(data_str['year'])
         except:
-            return HttpResponse('error loading user')
+            print('Error loading last report')
+        try:
+            reports = Report.objects.filter(user=user)
+            result = {}
+            for report in reports:
+                with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report.path}', 'r') as f:
+                    report_data = json.load(f)
+                    result[report.id] = report_data
+            result = json.dumps(result)
+            context['result'] = result
+        except:
+            print('Error loading all reports')
 
         if 'dashboard_errors' in request.session:
             context['errors'] = request.session['dashboard_errors']
@@ -232,9 +251,9 @@ def upload_file(request):
     r = requests.post('http://127.0.0.1:5000/', data=out)
     print(r.content)
 
-    report_path = f"{uid}_{time}.json"
+    report_path = f"/{uid}_{time}.json"
     # If the file name exists, write a JSON string into the file.
-    f = open(f'apps/user_app/static/reports/{report_path}', 'w')
+    f = open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report_path}', 'w')
     f.write(r.text)
     # Save report to the database
     new_report = Report.objects.create(
@@ -288,10 +307,9 @@ def delete_file (request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
         try:
-            print('dfg')
             file = File.objects.get(id=id)
-            os.remove(f'apps/user_app/static/files/{file.path}')
             file.delete()
+            os.remove(f'apps/user_app/static/files/{file.path}')
         except:
             print('File not found')
         return redirect('/my_files')
