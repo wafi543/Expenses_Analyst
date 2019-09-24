@@ -416,8 +416,9 @@ def index_admin(request):
     return render(request, 'dashboard.html')
 
 def users(request):
-    args= {'user': request.user_app_user}
-    return render(request, 'show_users.html',args)
+    user = User.objects.get(id=1)
+    context= {'user': user}
+    return render(request, 'show_users.html',context)
 
 def files(request):
     return render(request, 'show_files.html')
