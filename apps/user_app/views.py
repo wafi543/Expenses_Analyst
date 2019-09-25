@@ -39,7 +39,7 @@ def index(request):
             reports = Report.objects.filter(user=user)
             result = {}
             reports_name = {}
-            allReports_type = {}
+            allReports = {}
             for report in reports:
                 with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                     report_data = json.load(f)
@@ -47,17 +47,18 @@ def index(request):
                     reports_name[report.id] = report.name
                     dicti = report_data['typeBased']['amount']
                     for key in dicti:
-                        if key in all_reports.keys():
-                            all_reports[key] += dicti[key]
+                        if key in allReports.keys():
+                            allReports[key] += dicti[key]
                         else:
-                            all_reports[key] = dicti[key]
-            print(allReports_type)
+                            allReports[key] = dicti[key]
+            print(allReports)
             
             result = json.dumps(result)
             reports_name = json.dumps(reports_name)
+            allReports = json.dumps(allReports)
             context['reports_json'] = result
             context['reports_name'] = reports_name
-            context['reports_type_json'] = allReports_type
+            context['reportsType_json'] = allReports
         except:
             print('Error loading all reports')
 
@@ -411,7 +412,7 @@ def view_report(request, id):
         try:
             report = Report.objects.get(id=id)
             # open JSON
-            with open(f'apps/user_app/static/reports/{report.path}', 'r') as f:
+            with open(f'{absolutenb_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                 report_json = json.load(f)
         except:
             return HttpResponse('Error. Report not found')

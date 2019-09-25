@@ -142,7 +142,6 @@ demo = {
     initChartist: function(){
         // Type based:
         var last_str = document.getElementById('last_json').value;
-        console.log(last_str)
         var last_json = JSON.parse(last_str);
         var typeBased = last_json['typeBased']['amount'];
         var monthBased = last_json['monthBased']['amount'];
@@ -151,43 +150,31 @@ demo = {
         var arr = getMonthBased(monthBased)
         var last_max = arr.pop()
         var last_values = arr.pop()
-        
-        var all_str = document.getElementById('reports_json').value;
-        var all_json = JSON.parse(all_str);
-        var allReports_values = []
-        var all_max = 0
-        for (key in all_json) {
-          var monthBased = all_json[key]['monthBased']['amount'];
-          var arr = getMonthBased(monthBased)
-          var max = arr.pop()
-          var values = arr.pop()
-          allReports_values.push(values)
-          if (max > all_max) {all_max = max}
+
+        // Last Report based on Type
+        var last_type_keys = []
+        var last_type_values = []
+        var count = 1
+        var html_typeBased = ''
+        for (var x in typeBased) {
+          last_type_keys.push(typeBased[x])
+          last_type_values.push(typeBased[x])
+          html_typeBased += '<i class="point color'+count+'"></i> '+x+'  '
+          count++
         }
+        document.getElementById("last_report_labels").innerHTML = html_typeBased;
 
+        Chartist.Pie('#lastReport_type', {
+          labels: last_type_keys,
+          series: last_type_values
+        });
+
+        // Last Report based on Month
         var last_data = {labels: months,series: [last_values]}
-        var all_data = {labels: months,series: allReports_values}
-
         var last_options = {
           lineSmooth: false,
           low: 0,
           high: last_max,
-          showArea: true,
-          height: "245px",
-          axisX: {
-            showGrid: false,
-          },
-          lineSmooth: Chartist.Interpolation.simple({
-            divisor: 3
-          }),
-          showLine: false,
-          showPoint: false,
-        };
-
-        var all_options = {
-          lineSmooth: false,
-          low: 0,
-          high: all_max,
           showArea: true,
           height: "245px",
           axisX: {
@@ -211,13 +198,100 @@ demo = {
         ];
 
         Chartist.Line('#lastReport_month', last_data, last_options, responsiveSales)
+
+
+        // All Reports based on Type
+        var allReportsType_labels = []
+        var allReportsType_values = []
+        var allReportsType_str = document.getElementById('reportsType_json').value;
+        var allReportsType = JSON.parse(allReportsType_str)
+        var allReportsType_html = ''
+        count = 1
+        for (type in allReportsType) {
+          allReportsType_labels.push(type)
+          allReportsType_values.push(allReportsType[type])
+          allReportsType_html += '<i class="point color'+count+'"></i> '+type+'  '
+          count++
+        }
+        document.getElementById("AllReports_type_labels").innerHTML = allReportsType_html;
+
+        Chartist.Pie('#allReports_type', {
+          labels: allReportsType_values,
+          series: allReportsType_values
+        })
+
+
+
+        // All Reports based on Month
+                
+        var all_str = document.getElementById('reports_json').value;
+        var reports_json = JSON.parse(all_str);
+        var allReports_values = []
+        var all_max = 0
+        for (key in reports_json) {
+          var monthBased = reports_json[key]['monthBased']['amount'];
+          var arr = getMonthBased(monthBased)
+          var max = arr.pop()
+          var values = arr.pop()
+          allReports_values.push(values)
+          if (max > all_max) {all_max = max}
+        }
+
+        var all_data = {labels: months,series: allReports_values}
+        var all_options = {
+          lineSmooth: false,
+          low: 0,
+          high: all_max,
+          showArea: true,
+          height: "245px",
+          axisX: {
+            showGrid: false,
+          },
+          lineSmooth: Chartist.Interpolation.simple({
+            divisor: 3
+          }),
+          showLine: false,
+          showPoint: false,
+        };
         Chartist.Line('#allReports_month', all_data, all_options, responsiveSales)
 
+        var reports_name_str = document.getElementById('reports_name').value;
+        var reports_name = JSON.parse(reports_name_str);
+        var count = 1
+        var reportsNames_html = ''
+        var reports_names = []
+        for (id in reports_name) {
+          reports_names.push(reports_name[id])
+          reportsNames_html += '<i class="point color'+count+'"></i> '+reports_name[id]+'  '
+          count++
+        }
+        document.getElementById("AllReports_month_labels").innerHTML = reportsNames_html;
+
+
+
+        // All Reports Based On Year
+        reports_year = []
+        for (key in reports_json) {
+          var values = []
+          var typeBased = reports_json[key]['typeBased']['amount'];
+          console.log('start')
+          for (type in typeBased) {
+            values.push(typeBased[type])
+            console.log('type: '+type+', value: '+typeBased[type])
+          }
+          console.log('end')
+          reports_year.push(values)
+        }
+        console.log(reports_year)
+
+
         var data = {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          labels: reports_names,
           series: [
-            [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895],
-            [412, 243, 280, 580, 453, 353, 300, 364, 368, 410, 636, 695]
+            [3405,1751,2680],
+            [422,942,1440],
+            [480,340,740],
+            [2243,1300,499]
           ]
         };
 
@@ -226,7 +300,7 @@ demo = {
             axisX: {
                 showGrid: false
             },
-            height: "245px"
+            height: "280px"
         };
 
         var responsiveOptions = [
@@ -240,57 +314,8 @@ demo = {
           }]
         ];
 
-        Chartist.Bar('#chartActivity', data, options, responsiveOptions);
-
-        var dataPreferences = {
-            series: [
-                [25, 30, 20, 45]
-            ]
-        };
-
-        var optionsPreferences = {
-            donut: true,
-            donutWidth: 40,
-            startAngle: 0,
-            total: 100,
-            showLabel: false,
-            axisX: {
-                showGrid: false
-            }
-        };
-
-        var last_type_keys = []
-        var last_type_values = []
-        var count = 1
-        var html_typeBased = ''
-        for (var x in typeBased) {
-          last_type_keys.push(typeBased[x])
-          last_type_values.push(typeBased[x])
-          html_typeBased += '<i class="point color'+count+'"></i> '+x+'  '
-          count++
-        }
-        count = 0
-        document.getElementById("last_report_labels").innerHTML = html_typeBased;
-
-
-
-        Chartist.Pie('#lastReport_type', dataPreferences, optionsPreferences);
-        Chartist.Pie('#lastReport_type', {
-          labels: last_type_keys,
-          series: last_type_values
-        });
-        
-        var reports_name_str = document.getElementById('reports_name').value;
-        console.log(reports_name_str)
-        var reports_name = JSON.parse(reports_name_str);
-        var count = 1
-        var reportsNames_html = ''
-        for (id in reports_name) {
-          reportsNames_html += '<i class="point color'+count+'"></i> '+reports_name[id]+'  '
-          count++
-        }
-        console.log(reportsNames_html)
-        document.getElementById("AllReports_month_labels").innerHTML = reportsNames_html;
+        Chartist.Bar('#allReports_year', data, options, responsiveOptions);
+        document.getElementById("AllReports_year_labels").innerHTML = allReportsType_html;
     },
 
     /*initGoogleMaps: function(){
