@@ -12,7 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
-absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
+absolute_path = ''
 
 
 def index(request):
@@ -138,7 +138,7 @@ def login(request):
         if bcrypt.checkpw(request.POST['password'].encode(), user.password.encode()):
             print("password match")
             request.session['uid'] = user.id
-            request.session['isAdmin']= user.isAdmin
+            request.session['isAdmin'] = user.isAdmin
             print(request.session['isAdmin'])
             return redirect('/')
         else:
@@ -186,8 +186,11 @@ def update_profile(request):
         user = User.objects.get(id=request.POST['id'])
         if not NAME_REGEX.match(request.POST['fname']):
             request.session['errors']['fname'] = 'First name must contain at least two letters and contains only letters'
+            return redirect('/profile')
         if not NAME_REGEX.match(request.POST['lname']):
             request.session['errors']['lname'] = 'Last name must contain at least two letters and contains only letters'
+            return redirect('/profile')
+
         if not EMAIL_REGEX.match(request.POST['email']):
             request.session['errors']['email'] = 'Invalid email address'
             return redirect('/profile')
@@ -195,27 +198,26 @@ def update_profile(request):
         if len(request.POST['password']) > 0:
             if len(request.POST['password']) < 8:
                 request.session['errors']['password'] = 'Your password must be at least 8 characters'
+                return redirect('/profile')
             if request.POST['password'] != request.POST['confirm']:
                 request.session['errors']['confirm'] = 'Passwords does not match'
+                return redirect('/profile')
 
         if(user.email != request.POST['email']):
             if User.objects.filter(email=request.POST['email']).exists():
                 request.session['errors']['email'] = 'Email is already exist'
                 return redirect('/profile')
 
-        if not 'errors' in request.session:
-            user.first_name = request.POST['fname']
-            user.last_name = request.POST['lname']
-            user.email = request.POST['email']
-            if len(request.POST['password']) > 0:
-                pw_hash = bcrypt.hashpw(
-                    request.POST['password'].encode(), bcrypt.gensalt())
-                user.password = pw_hash
-            user.save()
-            errors['done'] = 'Profile has been updated successfully'
-            return redirect('/profile')
-        else:
-            return redirect('/profile')
+        user.first_name = request.POST['fname']
+        user.last_name = request.POST['lname']
+        user.email = request.POST['email']
+        if len(request.POST['password']) > 0:
+            pw_hash = bcrypt.hashpw(
+                request.POST['password'].encode(), bcrypt.gensalt())
+            user.password = pw_hash
+        user.save()
+        request.session['errors']['done'] = 'Profile has been updated successfully'
+        return redirect('/profile')
     except:
         HttpResponse('User id not found')
 
@@ -322,6 +324,7 @@ def view_file(request, id):
     else:
         return render(request, 'login.html')
 
+
 def delete_file(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -331,11 +334,10 @@ def delete_file(request, id):
             os.remove(f'apps/user_app/static/files/{file.path}')
         except:
             print('File not found')
-        if request.session['isAdmin']== False:
+        if request.session['isAdmin'] == False:
             return redirect('/my_files')
         else:
             return redirect('/admin_dashboard/show_files')
-
 
     else:
         return render(request, 'login.html')
@@ -344,19 +346,16 @@ def delete_file(request, id):
 def contact(request):
     if 'uid' in request.session:
         uid = request.session['uid']
-        try:
-            user = User.objects.get(id=uid)
-            context = {
-                'data': data,
-                'user': user,
+        user = User.objects.get(id=uid)
+        context = {
+            'data': data,
+            'user': user,
             }
-            return render(request, 'login.html', context)
-
-        except:
-            return HttpResponse('error loading user')
         return render(request, 'contact.html', context)
     else:
         return render(request, 'login.html')
+
+
 
 
 def contact_process(request):
@@ -434,10 +433,10 @@ def view_report(request, id):
         return render(request, 'login.html')
 
 
-def delete_user(request,id):
+def delete_user(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
-        if request.session['isAdmin']== True:
+        if request.session['isAdmin'] == True:
             try:
                 print('dfg')
                 user = User.objects.get(id=id)
@@ -447,10 +446,9 @@ def delete_user(request,id):
                 print('user not found')
             return redirect('/admin_dashboard/show_users')
 
-
     else:
         return render(request, 'login.html')
-   
+
 
 def delete_report(request, id):
     if 'uid' in request.session:
@@ -458,36 +456,37 @@ def delete_report(request, id):
         try:
             print('dfg')
             report = Report.objects.get(id=id)
-            os.remove(f'{absolute_path}apps/user_app/static/reports/{report.path}')
+            os.remove(
+                f'{absolute_path}apps/user_app/static/reports/{report.path}')
             report.delete()
         except:
             print('Report not found')
-        if request.session['isAdmin']== False:
+        if request.session['isAdmin'] == False:
             return redirect('/my_reports')
         else:
             return redirect('/admin_dashboard/show_reports')
 
-
     else:
         return render(request, 'login.html')
 
-   
-        
+
 def index_admin(request):
     return render(request, 'dashboard.html')
+
 
 def users(request):
     users = User.objects.all()
     context = {'users': users}
-    return render(request, 'show_users.html',context)
+    return render(request, 'show_users.html', context)
+
 
 def files(request):
     files = File.objects.all()
     context = {'files': files}
-    return render(request, 'show_files.html',context)
+    return render(request, 'show_files.html', context)
+
 
 def reports(request):
     reports = Report.objects.all()
-    context ={'reports':reports}
-    return render(request, 'show_reports.html',context)
-
+    context = {'reports': reports}
+    return render(request, 'show_reports.html', context)
