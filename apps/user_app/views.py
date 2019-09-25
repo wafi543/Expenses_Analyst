@@ -12,7 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
-absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
+absolute_path = ''
 
 
 def index(request):
@@ -52,7 +52,7 @@ def index(request):
                         else:
                             allReports[key] = dicti[key]
             print(allReports)
-            
+
             result = json.dumps(result)
             reports_name = json.dumps(reports_name)
             allReports = json.dumps(allReports)
@@ -350,51 +350,27 @@ def contact(request):
         context = {
             'data': data,
             'user': user,
-            }
+        }
         return render(request, 'contact.html', context)
     else:
         return render(request, 'login.html')
-
-
 
 
 def contact_process(request):
     errors = {}
     context = {'data': data}
     uid = str(request.session['uid'])
-    time = datetime.datetime.now()
-    time = str(time.strftime("%d_%m_%y_%H_%M_%S"))
     if request.method == "GET":
         print("a GET request is being made to this route")
         return redirect('/contact')
     if request.method == "POST":
         user = User.objects.get(id=uid)
-        uploaded = request.FILES['document']
-        fileName = uploaded.name
-        fileSize = uploaded.size
-        print(uploaded.name)
-        print(uploaded.size)
-
-        # check if size is less than 2.6 megabyte
-        if(fileSize > 2621440):
-            errors['file_size'] = "file size is too big"
-            context['errors'] = errors
-            return render(request, 'contact.html', context)
-        if not fileName.endswith('.png') and not fileName.endswith('.jpg'):
-            errors['file_type'] = 'Uploaded file is not an image'
-            context['errors'] = errors
-            return render(request, 'contact.html', context)
-        fileStore = FileSystemStorage()
-        path = f"messages/{uid}_{time}.png"
-        fileStore.save(path, uploaded)
         new_message = Message.objects.create(
-            content=request.POST['content'], path=path, sender=user)
+            content=request.POST['content'], path='path', sender=user)
         new_message.save()
         errors['uploaded'] = 'Your message has been sent successfully, we will review your message soon. Thank you!'
         context['errors'] = errors
         return render(request, 'contact.html', context)
-
-
 def my_reports(request):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -422,12 +398,13 @@ def view_report(request, id):
             with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                 data_str = json.load(f)
                 report_json = json.dumps(data_str)
-                
+
         except:
             return HttpResponse('Error. Report not found')
         context = {
             'report': report,
             'json': report_json,
+            'data': data_str,
             'year': str(data_str['year'])
         }
         return render(request, 'view_report.html', context)
