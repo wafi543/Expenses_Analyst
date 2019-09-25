@@ -12,7 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
-absolute_path = ''
+absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
 
 
 def index(request):
@@ -418,9 +418,7 @@ def delete_user(request, id):
         uid = request.session['uid']
         if request.session['isAdmin'] == True:
             try:
-                print('dfg')
                 user = User.objects.get(id=id)
-            # os.remove(f'apps/user_app/static/reports/{report.path}')
                 user.delete()
             except:
                 print('user not found')
