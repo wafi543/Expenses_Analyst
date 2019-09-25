@@ -12,7 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
-absolute_path = ''
+absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
 
 
 def index(request):
@@ -38,20 +38,27 @@ def index(request):
         try:
             reports = Report.objects.filter(user=user)
             result = {}
-            all_reports = {}
+            reports_name = {}
+            allReports = {}
             for report in reports:
                 with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                     report_data = json.load(f)
                     result[report.id] = report_data
+                    reports_name[report.id] = report.name
                     dicti = report_data['typeBased']['amount']
                     for key in dicti:
-                        if key in all_reports.keys():
-                            all_reports[key] += dicti[key]
+                        if key in allReports.keys():
+                            allReports[key] += dicti[key]
                         else:
-                            all_reports[key] = dicti[key]
-            print(all_reports)
+                            allReports[key] = dicti[key]
+            print(allReports)
+            
             result = json.dumps(result)
-            context['result'] = result
+            reports_name = json.dumps(reports_name)
+            allReports = json.dumps(allReports)
+            context['reports_json'] = result
+            context['reports_name'] = reports_name
+            context['reportsType_json'] = allReports
         except:
             print('Error loading all reports')
 
@@ -412,13 +419,16 @@ def view_report(request, id):
         try:
             report = Report.objects.get(id=id)
             # open JSON
-            with open(f'apps/user_app/static/reports/{report.path}', 'r') as f:
-                report_json = json.load(f)
+            with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
+                data_str = json.load(f)
+                report_json = json.dumps(data_str)
+                
         except:
             return HttpResponse('Error. Report not found')
         context = {
             'report': report,
             'json': report_json,
+            'year': str(data_str['year'])
         }
         return render(request, 'view_report.html', context)
 
