@@ -11,7 +11,7 @@
     <script>
             function clicked(e)
             {
-                if(confirm('Are you sure?'))
+                if(confirm('Are you sure about deleting {{file.name}}?'))
                 window.location.replace('/my_files/{{file.id}}/delete');
                 e.preventDefault();
             }
