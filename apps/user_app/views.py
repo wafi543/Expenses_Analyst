@@ -262,7 +262,7 @@ def upload_file(request):
     # send file to API
     f = open(f'apps/user_app/static/files/{file_path}', 'r')
 
-    reader = csv.DictReader(f, fieldnames=("date", "type", "amount", "income"))
+    reader = csv.DictReader(f, fieldnames=("date", "type", "amount", 'income', 'limit','category', 'target'))
     out = json.dumps([row for row in reader])
 
     print(out)

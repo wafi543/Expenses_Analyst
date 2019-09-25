@@ -89,11 +89,12 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
-                <h4 class="ml-4">Report name: {{report.name}}</h4>
+                <h1 class="ml-4">Report name: {{report.name}}</h1>
             </div>
             <div class="row">
                 <div class="col">
-                    <table class="table table-hover table-bordered w-50">
+                    <h3>Maximum and minimum spendings</h3>
+                    <table class="table table-hover table-bordered ">
                         <thead class="thead-dark">
                             <tr>
                                 <th scope="col"></th>
@@ -115,6 +116,48 @@
                                 <td>{{data.minSpend.minSpend.type}}</td>
                                 <td>{{data.minSpend.minSpend.amount}}</td>
                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col">
+                    <h4>Target % from income</h4>
+                    <table class="table table-hover table-bordered w-75">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Category</th>
+                                <th scope="col">Target %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, val in data.targetPerc.target.items%}
+                            <tr>
+                                {%if key != ''%}
+                                <td>{{key}}</td>
+                                <td>{{val}}%</td>
+                                {%endif%}
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col w-50">
+                    <h4>Actual % from income</h4>
+                    <table class="table table-hover table-bordered w-75">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Category</th>
+                                <th scope="col">Target %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, val in data.typeBased.percentage.items%}
+                            <tr>
+                                {%if key != ''%}
+                                <td>{{key}}</td>
+                                <td>{{val}}%</td>
+                                {%endif%}
+                            </tr>
+                            {%endfor%}
                         </tbody>
                     </table>
                 </div>
