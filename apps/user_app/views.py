@@ -12,7 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
-absolute_path = ''
+absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
 
 
 def index(request):
@@ -420,12 +420,15 @@ def view_report(request, id):
             report = Report.objects.get(id=id)
             # open JSON
             with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
-                report_json = json.load(f)
+                data_str = json.load(f)
+                report_json = json.dumps(data_str)
+                
         except:
             return HttpResponse('Error. Report not found')
         context = {
             'report': report,
             'json': report_json,
+            'year': str(data_str['year'])
         }
         return render(request, 'view_report.html', context)
 

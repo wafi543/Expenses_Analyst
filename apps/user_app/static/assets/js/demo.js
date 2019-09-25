@@ -287,6 +287,7 @@ demo = {
           reports_year_labels.push(reports_json[key]['year'])
           reports_year.push(values)
         }
+        console.log(typeBased)
         reports_year = transpose(reports_year)
 
         var data = {

@@ -28,13 +28,8 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
 
     <style>
-        .error {
-            color: red;
-        }
-
-        .green {
-            color: green
-        }
+        .error {color: red;}
+        .green {color: green}
 
         .point {
             border-radius: 50%;
@@ -43,31 +38,13 @@
             display: inline-block;
         }
 
-        .color1 {
-            background-color: #21bbe4;
-        }
-
-        .color2 {
-            background-color: #f7263b;
-        }
-
-        .color3 {
-            background-color: #fd9429;
-        }
-
-        .color4 {
-            background-color: #7f4ce3;
-        }
-
-        .color5 {
-            background-color: #77c413;
-        }
-        .color6 {
-            background-color: #1b60c5;
-        }
-        .color7 {
-            background-color: #4c4c4c;
-        }
+        .color1 {background-color: #21bbe4;}
+        .color2 {background-color: #f7263b;}
+        .color3 {background-color: #fd9429;}
+        .color4 {background-color: #7f4ce3;}
+        .color5 {background-color: #77c413;}
+        .color6 {background-color: #1b60c5;}
+        .color7 {background-color: #4c4c4c;}
     </style>
 </head>
 
@@ -149,6 +126,7 @@
 
             <div class="content">
                 <div class="container-fluid">
+
                     <div class="row">
                         <div class="col-md-7">
                             <div class="card">
@@ -231,13 +209,14 @@
                                         </div>
                                         <hr>
                                         <div class="stats">
-                                            <i class="fa fa-history"></i> {{last_report.created_at}}
+                                            <i class="fa fa-clock-o"></i> {{last_report.created_at}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
                         <input id="reports_json" type="hidden" value="{{reports_json}}">
                         <input id="reports_name" type="hidden" value="{{reports_name}}">
@@ -277,7 +256,7 @@
                                         </div>
                                         <hr>
                                         <div class="stats">
-                                            <i class="fa fa-history"></i> {{last_report.created_at}}
+                                            <i class="fa fa-clock-o"></i> {{last_report.created_at}}
                                         </div>
                                     </div>
                                 </div>
@@ -300,14 +279,11 @@
                                         </div>
                                         <hr>
                                         <div class="stats">
-                                            <i class="fa fa-check"></i> Data information certified
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-
 
                     </div>
                 </div>
