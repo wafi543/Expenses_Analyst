@@ -38,12 +38,16 @@ def index(request):
         try:
             reports = Report.objects.filter(user=user)
             result = {}
+            reports_name = {}
             for report in reports:
                 with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                     report_data = json.load(f)
                     result[report.id] = report_data
+                reports_name[report.id] = report.name
             result = json.dumps(result)
-            context['result'] = result
+            reports_name = json.dumps(reports_name)
+            context['reports_json'] = result
+            context['reports_name'] = reports_name
         except:
             print('Error loading all reports')
 

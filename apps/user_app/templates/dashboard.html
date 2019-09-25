@@ -30,27 +30,34 @@
         .error {
             color: red;
         }
+
         .green {
             color: green
         }
+
         .point {
             border-radius: 50%;
             width: 10px;
             height: 10px;
             display: inline-block;
         }
+
         .color1 {
             background-color: #21bbe4;
         }
+
         .color2 {
             background-color: #f7263b;
         }
+
         .color3 {
             background-color: #fd9429;
         }
+
         .color4 {
             background-color: #7f4ce3;
         }
+
         .color5 {
             background-color: #77c413;
         }
@@ -175,6 +182,7 @@
                     </div>
 
                     <div class="row">
+                        <input id="last_json" type="hidden" value="{{last_json}}">
                         <div class="col-md-4">
                             <div class="card">
 
@@ -184,8 +192,7 @@
                                     <p class="category">Name: {{last_report.name}}</p>
                                 </div>
                                 <div class="content">
-                                    <input id="last_json" type="hidden" value="{{last_json}}">
-                                    <div id="lastReport" class="ct-chart ct-perfect-fourth"></div>
+                                    <div id="lastReport_type" class="ct-chart ct-perfect-fourth"></div>
 
                                     <div class="footer">
                                         <div id="last_report_labels" class="legend">
@@ -210,13 +217,55 @@
                                     <p class="category">Name: {{last_report.name}}</p>
                                 </div>
                                 <div class="content">
-                                    <input id="typeBased" type="hidden" value="{{result}}">
-                                    <div id="chartHours" class="ct-chart"></div>
+                                    <div id="lastReport_month" class="ct-chart"></div>
                                     <div class="footer">
                                         <div class="legend">
-                                            <!-- <i class="fa fa-circle text-info"></i> Open
-                                            <i class="fa fa-circle text-danger"></i> Click
-                                            <i class="fa fa-circle text-warning"></i> Click Second Time -->
+                                            
+                                        </div>
+                                        <hr>
+                                        <div class="stats">
+                                            <i class="fa fa-history"></i> {{last_report.created_at}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input id="reports_json" type="hidden" value="{{reports_json}}">
+                        <input id="reports_name" type="hidden" value="{{reports_name}}">
+                        <div class="col-md-4">
+                            <div class="card">
+
+                                <div class="header">
+                                    <h4 class="title">All Reports based on Type</h4>
+                                </div>
+                                <div class="content">
+                                    <div id="allReports_type" class="ct-chart ct-perfect-fourth"></div>
+
+                                    <div class="footer">
+                                        <div id="AllReports_type_labels" class="legend">
+                                            
+                                        </div>
+                                        <hr>
+                                        <div class="stats">
+                                            <i class="fa fa-clock-o"></i> {{last_report.created_at}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">All Reports based on Month</h4>
+                                </div>
+                                <div class="content">
+                                    <div id="allReports_month" class="ct-chart"></div>
+                                    <div class="footer">
+                                        <div id="AllReports_month_labels" class="legend">
+                                            
                                         </div>
                                         <hr>
                                         <div class="stats">

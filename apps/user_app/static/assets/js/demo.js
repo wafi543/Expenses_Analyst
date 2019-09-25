@@ -1,6 +1,16 @@
 type = ['','info','success','warning','danger'];
 
-
+function getMonthBased (monthBased) {
+  var last_max = 0
+  var last_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  for (var x=1; x <= last_values.length; x++) {
+    if (monthBased[x] != null) {
+      if (monthBased[x] > last_max) {last_max = monthBased[x]}
+      last_values[x-1] = monthBased[x]
+    }
+  }
+  return [last_values,last_max]
+}
 
 demo = {
     initPickColor: function(){
@@ -131,37 +141,53 @@ demo = {
 
     initChartist: function(){
         // Type based:
-        var str = document.getElementById('last_json').value;
-        console.log(str)
-        var last_json = JSON.parse(str);
+        var last_str = document.getElementById('last_json').value;
+        console.log(last_str)
+        var last_json = JSON.parse(last_str);
         var typeBased = last_json['typeBased']['amount'];
         var monthBased = last_json['monthBased']['amount'];
-        console.log(typeBased)
-        console.log(monthBased)
         
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        var last_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        var monthsDict = {'1':'Jan', '2':'Feb', '3':'Mar', '4':'Apr', '5':'May', '6':'Jun', '7':'Jul', '8':'Aug', '9':'Sep', '10':'Oct', '11':'Nov', '12':'Dec'}
-        var last_max = 0
-        for (var x=1; x <= last_values.length; x++) {
-          console.log('x: ' + x + ', monthBased[x]: ' + monthBased[x] + ', monthsDict[x]: ' + monthsDict[x] + ', months[x-1]: ' + months[x-1])
-          if (monthBased[x] != null) {
-            if (monthBased[x] > last_max) {last_max = monthBased[x]}
-            last_values[x-1] = monthBased[x]
-          }
+        var arr = getMonthBased(monthBased)
+        var last_max = arr.pop()
+        var last_values = arr.pop()
+        
+        var all_str = document.getElementById('reports_json').value;
+        var all_json = JSON.parse(all_str);
+        var allReports_values = []
+        var all_max = 0
+        for (key in all_json) {
+          var monthBased = all_json[key]['monthBased']['amount'];
+          var arr = getMonthBased(monthBased)
+          var max = arr.pop()
+          var values = arr.pop()
+          allReports_values.push(values)
+          if (max > all_max) {all_max = max}
         }
-        console.log(last_json['maximum'])
-        var dataSales = {
-          labels: months,
-          series: [
-            last_values,
-          ]
-        };
 
-        var optionsSales = {
+        var last_data = {labels: months,series: [last_values]}
+        var all_data = {labels: months,series: allReports_values}
+
+        var last_options = {
           lineSmooth: false,
           low: 0,
           high: last_max,
+          showArea: true,
+          height: "245px",
+          axisX: {
+            showGrid: false,
+          },
+          lineSmooth: Chartist.Interpolation.simple({
+            divisor: 3
+          }),
+          showLine: false,
+          showPoint: false,
+        };
+
+        var all_options = {
+          lineSmooth: false,
+          low: 0,
+          high: all_max,
           showArea: true,
           height: "245px",
           axisX: {
@@ -184,8 +210,8 @@ demo = {
           }]
         ];
 
-        Chartist.Line('#chartHours', dataSales, optionsSales, responsiveSales);
-
+        Chartist.Line('#lastReport_month', last_data, last_options, responsiveSales)
+        Chartist.Line('#allReports_month', all_data, all_options, responsiveSales)
 
         var data = {
           labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -246,13 +272,25 @@ demo = {
         count = 0
         document.getElementById("last_report_labels").innerHTML = html_typeBased;
 
-        Chartist.Pie('#lastReport', dataPreferences, optionsPreferences);
 
-        Chartist.Pie('#lastReport', {
+
+        Chartist.Pie('#lastReport_type', dataPreferences, optionsPreferences);
+        Chartist.Pie('#lastReport_type', {
           labels: last_type_keys,
           series: last_type_values
         });
-
+        
+        var reports_name_str = document.getElementById('reports_name').value;
+        console.log(reports_name_str)
+        var reports_name = JSON.parse(reports_name_str);
+        var count = 1
+        var reportsNames_html = ''
+        for (id in reports_name) {
+          reportsNames_html += '<i class="point color'+count+'"></i> '+reports_name[id]+'  '
+          count++
+        }
+        console.log(reportsNames_html)
+        document.getElementById("AllReports_month_labels").innerHTML = reportsNames_html;
     },
 
     /*initGoogleMaps: function(){
