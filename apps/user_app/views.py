@@ -76,6 +76,7 @@ def index(request):
 def logout(request):
     try:
         del request.session['uid']
+        del request.session['isAdmin']
     except:
         print('error')
     return redirect('/')
