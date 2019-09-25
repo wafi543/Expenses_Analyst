@@ -26,7 +26,7 @@ def index(request):
         try:
             # get last report
             last = Report.objects.filter(user=user).last()
-            with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{last.path}', 'r') as f:
+            with open(f'apps/user_app/static/reports/eports/{last.path}', 'r') as f:
                 data_str = json.load(f)
                 last_json = json.dumps(data_str)
                 context['last_report'] = last
@@ -38,7 +38,7 @@ def index(request):
             reports = Report.objects.filter(user=user)
             result = {}
             for report in reports:
-                with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report.path}', 'r') as f:
+                with open(f'apps/user_app/static/reports/reports/{report.path}', 'r') as f:
                     report_data = json.load(f)
                     result[report.id] = report_data
             result = json.dumps(result)
@@ -253,7 +253,7 @@ def upload_file(request):
 
     report_path = f"/{uid}_{time}.json"
     # If the file name exists, write a JSON string into the file.
-    f = open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report_path}', 'w')
+    f = open(f'apps/user_app/static/reports/{report_path}', 'w')
     f.write(r.text)
     # Save report to the database
     new_report = Report.objects.create(
