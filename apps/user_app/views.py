@@ -12,6 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
+absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
 
 
 def index(request):
@@ -26,7 +27,7 @@ def index(request):
         try:
             # get last report
             last = Report.objects.filter(user=user).last()
-            with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{last.path}', 'r') as f:
+            with open(f'{absolute_path}apps/user_app/static/reports/{last.path}', 'r') as f:
                 data_str = json.load(f)
                 last_json = json.dumps(data_str)
                 context['last_report'] = last
@@ -38,7 +39,7 @@ def index(request):
             reports = Report.objects.filter(user=user)
             result = {}
             for report in reports:
-                with open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report.path}', 'r') as f:
+                with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                     report_data = json.load(f)
                     result[report.id] = report_data
             result = json.dumps(result)
@@ -253,9 +254,9 @@ def upload_file(request):
     r = requests.post('http://127.0.0.1:5000/', data=out)
     print(r.content)
 
-    report_path = f"/{uid}_{time}.json"
+    report_path = f"{uid}_{time}.json"
     # If the file name exists, write a JSON string into the file.
-    f = open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report_path}', 'w')
+    f = open(f'{absolute_path}apps/user_app/static/reports/{report_path}', 'w')
     f.write(r.text)
     # Save report to the database
     new_report = Report.objects.create(
@@ -414,7 +415,7 @@ def view_report(request, id):
         uid = request.session['uid']
         try:
             report = Report.objects.get(id=id)
-            f = open(f'apps/user_app/static/reports/{report.path}', 'r')
+            f = open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r')
             reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
             out = json.dumps([row for row in reader])
         except:
@@ -446,7 +447,7 @@ def delete_report(request, id):
         try:
             print('dfg')
             report = Report.objects.get(id=id)
-            os.remove(f'apps/user_app/static/reports/{report.path}')
+            os.remove(f'{absolute_path}apps/user_app/static/reports/{report.path}')
             report.delete()
         except:
             print('Report not found')
