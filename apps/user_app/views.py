@@ -26,7 +26,7 @@ def index(request):
         try:
             # get last report
             last = Report.objects.filter(user=user).last()
-            with open(f'apps/user_app/static/reports/eports/{last.path}', 'r') as f:
+            with open(f'apps/user_app/static/reports/{last.path}', 'r') as f:
                 data_str = json.load(f)
                 last_json = json.dumps(data_str)
                 context['last_report'] = last
@@ -37,10 +37,18 @@ def index(request):
         try:
             reports = Report.objects.filter(user=user)
             result = {}
+            all_reports = {}
             for report in reports:
-                with open(f'apps/user_app/static/reports/reports/{report.path}', 'r') as f:
+                with open(f'apps/user_app/static/reports/{report.path}', 'r') as f:
                     report_data = json.load(f)
                     result[report.id] = report_data
+                    dicti = report_data['typeBased']['amount']
+                    for key in dicti:
+                        if key in all_reports.keys():
+                            all_reports[key] += dicti[key]
+                        else:
+                            all_reports[key] = dicti[key]
+            print(all_reports)
             result = json.dumps(result)
             context['result'] = result
         except:
@@ -55,8 +63,6 @@ def index(request):
         return render(request, 'dashboard.html', context)
     else:
         return render(request, 'login.html')
-
-
 
 
 def logout(request):
@@ -165,7 +171,7 @@ def profile(request):
 
 
 def update_profile(request):
-    request.session['errors']= {}
+    request.session['errors'] = {}
     try:
         user = User.objects.get(id=request.POST['id'])
         if not NAME_REGEX.match(request.POST['fname']):
@@ -186,7 +192,6 @@ def update_profile(request):
             if User.objects.filter(email=request.POST['email']).exists():
                 request.session['errors']['email'] = 'Email is already exist'
                 return redirect('/profile')
-            
 
         if not 'errors' in request.session:
             user.first_name = request.POST['fname']
@@ -203,6 +208,7 @@ def update_profile(request):
             return redirect('/profile')
     except:
         HttpResponse('User id not found')
+
 
 def upload_file(request):
     errors = {}
@@ -232,12 +238,13 @@ def upload_file(request):
             errors['file_name'] = 'File name is empty'
             request.session['dashboard_errors'] = errors
             return redirect('/')
-        
+
         fileStore = FileSystemStorage()
         file_path = f"{uid}/{uid}_{time}.csv"
         fileStore.save(file_path, uploaded)
         user = User.objects.get(id=uid)
-        new_file = File.objects.create(name=request.POST['file_name'], path=file_path, user=user)
+        new_file = File.objects.create(
+            name=request.POST['file_name'], path=file_path, user=user)
         new_file.save()
 
     # send file to API
@@ -264,6 +271,7 @@ def upload_file(request):
     request.session['dashboard_errors'] = errors
     return redirect('/')
 
+
 def my_files(request):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -281,18 +289,19 @@ def my_files(request):
     else:
         return render(request, 'login.html')
 
-def view_file (request, id):
+
+def view_file(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
         try:
             file = File.objects.get(id=id)
-            
+
             f = open(f'apps/user_app/static/files/{file.path}', 'r')
             reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
             out = json.dumps([row for row in reader])
             parsed_json = (json.loads(out))
             del parsed_json[0]
-            context={
+            context = {
                 'file': file,
                 'json': parsed_json,
             }
@@ -303,7 +312,8 @@ def view_file (request, id):
     else:
         return render(request, 'login.html')
 
-def delete_file (request, id):
+
+def delete_file(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
         try:
@@ -315,6 +325,7 @@ def delete_file (request, id):
         return redirect('/my_files')
     else:
         return render(request, 'login.html')
+
 
 def contact(request):
     if 'uid' in request.session:
@@ -331,9 +342,10 @@ def contact(request):
     else:
         return render(request, 'login.html')
 
+
 def contact_process(request):
     errors = {}
-    context = {'data':data}
+    context = {'data': data}
     uid = str(request.session['uid'])
     time = datetime.datetime.now()
     time = str(time.strftime("%d_%m_%y_%H_%M_%S"))
@@ -360,11 +372,13 @@ def contact_process(request):
         fileStore = FileSystemStorage()
         path = f"messages/{uid}_{time}.png"
         fileStore.save(path, uploaded)
-        new_message = Message.objects.create(content=request.POST['content'], path=path, sender=user)
+        new_message = Message.objects.create(
+            content=request.POST['content'], path=path, sender=user)
         new_message.save()
         errors['uploaded'] = 'Your message has been sent successfully, we will review your message soon. Thank you!'
         context['errors'] = errors
         return render(request, 'contact.html', context)
+
 
 def my_reports(request):
     if 'uid' in request.session:
@@ -383,21 +397,29 @@ def my_reports(request):
     else:
         return render(request, 'login.html')
 
-def view_report (request, id):
+
+def view_report(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
         try:
             report = Report.objects.get(id=id)
-            f = open(f'apps/user_app/static/reports/{report.path}', 'r')
-            reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
-            out = json.dumps([row for row in reader])
+            # open JSON
+            with open(f'apps/user_app/static/reports/{report.path}', 'r') as f:
+                report_json = json.load(f)
+
         except:
             return HttpResponse('Error. Report not found')
-        return HttpResponse(report.path + '\n\n\n' + out)
+        context = {
+            'report': report,
+            'json': report_json,
+        }
+        return render(request, 'view_report.html', context)
+
     else:
         return render(request, 'login.html')
 
-def delete_report (request, id):
+
+def delete_report(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
         try:
