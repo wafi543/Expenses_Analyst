@@ -420,7 +420,7 @@ def view_report(request, id):
         try:
             report = Report.objects.get(id=id)
             # open JSON
-            with open(f'{absolutenb_path}apps/user_app/static/reports/{report.path}', 'r') as f:
+            with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                 report_json = json.load(f)
         except:
             return HttpResponse('Error. Report not found')

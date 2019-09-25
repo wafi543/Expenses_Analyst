@@ -1,5 +1,9 @@
 type = ['','info','success','warning','danger'];
 
+function transpose(matrix) {
+  return matrix[0].map((col, i) => matrix.map(row => row[i]));
+}
+
 function getMonthBased (monthBased) {
   var last_max = 0
   var last_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -271,28 +275,23 @@ demo = {
 
         // All Reports Based On Year
         reports_year = []
+        reports_year_labels = []
+        console.log(typeBased)
         for (key in reports_json) {
           var values = []
           var typeBased = reports_json[key]['typeBased']['amount'];
-          console.log('start')
+
           for (type in typeBased) {
             values.push(typeBased[type])
-            console.log('type: '+type+', value: '+typeBased[type])
           }
-          console.log('end')
+          reports_year_labels.push(reports_json[key]['year'])
           reports_year.push(values)
         }
-        console.log(reports_year)
-
+        reports_year = transpose(reports_year)
 
         var data = {
-          labels: reports_names,
-          series: [
-            [3405,1751,2680],
-            [422,942,1440],
-            [480,340,740],
-            [2243,1300,499]
-          ]
+          labels: reports_year_labels,
+          series: reports_year
         };
 
         var options = {
