@@ -70,106 +70,143 @@
             background-color: #4c4c4c;
         }
     </style>
-
-    <script>
-        function clicked(e) {
-            if (confirm('Are you sure?'))
-                window.location.replace('/my_files/{{file.id}}/delete');
-            e.preventDefault();
-        }
-    </script>
 </head>
 
 <body>
     <div class="container ">
         <div class="row d-flex justify-content-end mt-2">
-            <a href="/my_reports" class="btn btn-outline-dark btn-sm">Go Back</a>
+            <a href="/my_reports" class="btn btn-outline-dark btn-sm m-2">Go Back</a>
+            <a href="" onclick="downLink()" class="btn btn-outline-dark btn-sm m-2">Download/Print</a>
+            <button class="btn btn-secondary btn-sm m-2" type="submit" onclick="clicked(event)">Delete</button>
         </div>
-    </div>
-    <div class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <h4 class="ml-4">Report name: {{report.name}}</h4>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <table class="table table-hover table-bordered w-50">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">Max Spend</th>
-                                <td>{{data.maxSpend.maxSpend.date}}</td>
-                                <td>{{data.maxSpend.maxSpend.type}}</td>
-                                <td>{{data.maxSpend.maxSpend.amount}}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Min Spend</th>
-                                <td>{{data.minSpend.minSpend.date}}</td>
-                                <td>{{data.minSpend.minSpend.type}}</td>
-                                <td>{{data.minSpend.minSpend.amount}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <h1 class="ml-4">Report name: {{report.name}}</h1>
                 </div>
-            </div>
-            <div class="row">
-                <input id="last_json" type="hidden" value="{{json}}">
-                <div class="col-md-4">
-                    <div class="card">
+                <br>
+                <div class="row mt-5">
+                    <div class="col">
+                        <h3>Maximum and minimum spendings</h3>
+                        <table class="table table-hover table-bordered ">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Max Spend</th>
+                                    <td>{{data.maxSpend.maxSpend.date}}</td>
+                                    <td>{{data.maxSpend.maxSpend.type}}</td>
+                                    <td>{{data.maxSpend.maxSpend.amount}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Min Spend</th>
+                                    <td>{{data.minSpend.minSpend.date}}</td>
+                                    <td>{{data.minSpend.minSpend.type}}</td>
+                                    <td>{{data.minSpend.minSpend.amount}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <h4>Target % from income</h4>
+                        <table class="table table-hover table-bordered w-75">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Target %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, val in data.targetPerc.target.items%}
+                                <tr>
+                                    {%if key != ''%}
+                                    <td>{{key}}</td>
+                                    <td>{{val}}%</td>
+                                    {%endif%}
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col w-50">
+                        <h4>Actual % from income</h4>
+                        <table class="table table-hover table-bordered w-75">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Target %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, val in data.typeBased.percentage.items%}
+                                <tr>
+                                    {%if key != ''%}
+                                    <td>{{key}}</td>
+                                    <td>{{val}}%</td>
+                                    {%endif%}
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <input id="last_json" type="hidden" value="{{json}}">
+                    <div class="col-md-4">
+                        <div class="card">
 
-                        <div class="header">
-                            <h4 class="title">Based on Type</h4>
-                            <h5 class="title">Year: {{year}}</h5>
-                        </div>
-                        <div class="content">
-                            <div id="lastReport_type" class="ct-chart ct-perfect-fourth"></div>
+                            <div class="header">
+                                <h4 class="title">Based on Type</h4>
+                                <h5 class="title">Year: {{year}}</h5>
+                            </div>
+                            <div class="content">
+                                <div id="lastReport_type" class="ct-chart ct-perfect-fourth"></div>
 
-                            <div class="footer">
-                                <div id="last_report_labels" class="legend">
+                                <div class="footer">
+                                    <div id="last_report_labels" class="legend">
 
+                                    </div>
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="fa fa-clock-o"></i> {{report.created_at}}
+                                    </div>
                                 </div>
-                                <hr>
-                                <div class="stats">
-                                    <i class="fa fa-clock-o"></i> {{report.created_at}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Based on Month</h4>
+                                <h5 class="title">Year: {{year}}</h5>
+                            </div>
+                            <div class="content">
+                                <div id="lastReport_month" class="ct-chart"></div>
+                                <div class="footer">
+                                    <div class="legend">
+
+                                    </div>
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="fa fa-clock-o"></i> {{report.created_at}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="header">
-                            <h4 class="title">Based on Month</h4>
-                            <h5 class="title">Year: {{year}}</h5>
-                        </div>
-                        <div class="content">
-                            <div id="lastReport_month" class="ct-chart"></div>
-                            <div class="footer">
-                                <div class="legend">
 
-                                </div>
-                                <hr>
-                                <div class="stats">
-                                    <i class="fa fa-clock-o"></i> {{report.created_at}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-
         </div>
-    </div>
     </div>
 </body>
-
 <!--   Core JS Files   -->
 <script src="{% static 'assets/js/jquery.3.2.1.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'assets/js/bootstrap.min.js' %}" type="text/javascript"></script>
@@ -199,6 +236,14 @@
         }); */
 
     });
+    function clicked(e) {
+        if (confirm('Are you sure about deletin {{report.name}}?'))
+            window.location.replace('/my_reports/{{report.id}}/delete');
+        e.preventDefault();
+    }
+    function downLink() {
+        window.print();
+    }
 </script>
 
 </html>
