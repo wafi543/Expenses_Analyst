@@ -38,10 +38,18 @@ def index(request):
         try:
             reports = Report.objects.filter(user=user)
             result = {}
+            all_reports = {}
             for report in reports:
                 with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                     report_data = json.load(f)
                     result[report.id] = report_data
+                    dicti = report_data['typeBased']['amount']
+                    for key in dicti:
+                        if key in all_reports.keys():
+                            all_reports[key] += dicti[key]
+                        else:
+                            all_reports[key] = dicti[key]
+            print(all_reports)
             result = json.dumps(result)
             context['result'] = result
         except:
@@ -166,7 +174,7 @@ def profile(request):
 
 
 def update_profile(request):
-    request.session['errors']= {}
+    request.session['errors'] = {}
     try:
         user = User.objects.get(id=request.POST['id'])
         if not NAME_REGEX.match(request.POST['fname']):
@@ -187,7 +195,6 @@ def update_profile(request):
             if User.objects.filter(email=request.POST['email']).exists():
                 request.session['errors']['email'] = 'Email is already exist'
                 return redirect('/profile')
-            
 
         if not 'errors' in request.session:
             user.first_name = request.POST['fname']
@@ -326,17 +333,7 @@ def delete_file(request, id):
     else:
         return render(request, 'login.html')
 
-""" 
-def admin_delete_file(request, id, user_id):
-        try:
-            print('dfg')
-            file = File.objects.get(id=id , user_id = user_id )
-            os.remove(f'apps/user_app/static/files/{file.path}')
-            file.delete()
-        except:
-            print('File not found')
-        return redirect('/admin_dashboard/show_reports')
-   """ 
+
 def contact(request):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -415,14 +412,20 @@ def view_report(request, id):
         uid = request.session['uid']
         try:
             report = Report.objects.get(id=id)
-            f = open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r')
-            reader = csv.DictReader(f, fieldnames=("date", "type", "amount"))
-            out = json.dumps([row for row in reader])
+            # open JSON
+            with open(f'apps/user_app/static/reports/{report.path}', 'r') as f:
+                report_json = json.load(f)
         except:
             return HttpResponse('Error. Report not found')
-        return HttpResponse(report.path + '\n\n\n' + out)
+        context = {
+            'report': report,
+            'json': report_json,
+        }
+        return render(request, 'view_report.html', context)
+
     else:
         return render(request, 'login.html')
+
 
 def delete_user(request,id):
     if 'uid' in request.session:
@@ -441,6 +444,7 @@ def delete_user(request,id):
     else:
         return render(request, 'login.html')
    
+
 def delete_report(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -459,6 +463,7 @@ def delete_report(request, id):
 
     else:
         return render(request, 'login.html')
+
    
         
 def index_admin(request):
@@ -478,3 +483,4 @@ def reports(request):
     reports = Report.objects.all()
     context ={'reports':reports}
     return render(request, 'show_reports.html',context)
+
