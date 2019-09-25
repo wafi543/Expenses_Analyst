@@ -138,6 +138,8 @@ def login(request):
         if bcrypt.checkpw(request.POST['password'].encode(), user.password.encode()):
             print("password match")
             request.session['uid'] = user.id
+            request.session['isAdmin']= user.isAdmin
+            print(request.session['isAdmin'])
             return redirect('/')
         else:
             uInfo = {
@@ -320,7 +322,6 @@ def view_file(request, id):
     else:
         return render(request, 'login.html')
 
-
 def delete_file(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -330,7 +331,12 @@ def delete_file(request, id):
             os.remove(f'apps/user_app/static/files/{file.path}')
         except:
             print('File not found')
-        return redirect('/my_files')
+        if request.session['isAdmin']== False:
+            return redirect('/my_files')
+        else:
+            return redirect('/admin_dashboard/show_files')
+
+
     else:
         return render(request, 'login.html')
 
@@ -344,6 +350,8 @@ def contact(request):
                 'data': data,
                 'user': user,
             }
+            return render(request, 'login.html', context)
+
         except:
             return HttpResponse('error loading user')
         return render(request, 'contact.html', context)
@@ -426,6 +434,24 @@ def view_report(request, id):
         return render(request, 'login.html')
 
 
+def delete_user(request,id):
+    if 'uid' in request.session:
+        uid = request.session['uid']
+        if request.session['isAdmin']== True:
+            try:
+                print('dfg')
+                user = User.objects.get(id=id)
+            # os.remove(f'apps/user_app/static/reports/{report.path}')
+                user.delete()
+            except:
+                print('user not found')
+            return redirect('/admin_dashboard/show_users')
+
+
+    else:
+        return render(request, 'login.html')
+   
+
 def delete_report(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -436,6 +462,32 @@ def delete_report(request, id):
             report.delete()
         except:
             print('Report not found')
-        return redirect('/my_reports')
+        if request.session['isAdmin']== False:
+            return redirect('/my_reports')
+        else:
+            return redirect('/admin_dashboard/show_reports')
+
+
     else:
         return render(request, 'login.html')
+
+   
+        
+def index_admin(request):
+    return render(request, 'dashboard.html')
+
+def users(request):
+    users = User.objects.all()
+    context = {'users': users}
+    return render(request, 'show_users.html',context)
+
+def files(request):
+    files = File.objects.all()
+    context = {'files': files}
+    return render(request, 'show_files.html',context)
+
+def reports(request):
+    reports = Report.objects.all()
+    context ={'reports':reports}
+    return render(request, 'show_reports.html',context)
+
