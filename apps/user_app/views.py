@@ -259,7 +259,7 @@ def upload_file(request):
     r = requests.post('http://127.0.0.1:5000/', data=out)
     print(r.content)
 
-    report_path = f"/{uid}_{time}.json"
+    report_path = f"{uid}_{time}.json"
     # If the file name exists, write a JSON string into the file.
     f = open(f'/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/apps/user_app/static/reports/{report_path}', 'w')
     f.write(r.text)
