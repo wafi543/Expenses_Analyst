@@ -404,6 +404,7 @@ def view_report(request, id):
         context = {
             'report': report,
             'json': report_json,
+            'data': data_str,
             'year': str(data_str['year'])
         }
         return render(request, 'view_report.html', context)

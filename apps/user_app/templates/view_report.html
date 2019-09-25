@@ -86,12 +86,39 @@
             <a href="/my_reports" class="btn btn-outline-dark btn-sm">Go Back</a>
         </div>
     </div>
-    <br><br>
-
     <div class="content">
         <div class="container-fluid">
-
-            <h1 class="title">Report Name: {{report.name}}</h1>
+            <div class="row">
+                <h4 class="ml-4">Report name: {{report.name}}</h4>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <table class="table table-hover table-bordered w-50">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Max Spend</th>
+                                <td>{{data.maxSpend.maxSpend.date}}</td>
+                                <td>{{data.maxSpend.maxSpend.type}}</td>
+                                <td>{{data.maxSpend.maxSpend.amount}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Min Spend</th>
+                                <td>{{data.minSpend.minSpend.date}}</td>
+                                <td>{{data.minSpend.minSpend.type}}</td>
+                                <td>{{data.minSpend.minSpend.amount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <div class="row">
                 <input id="last_json" type="hidden" value="{{json}}">
                 <div class="col-md-4">
@@ -106,7 +133,7 @@
 
                             <div class="footer">
                                 <div id="last_report_labels" class="legend">
-                                    
+
                                 </div>
                                 <hr>
                                 <div class="stats">
