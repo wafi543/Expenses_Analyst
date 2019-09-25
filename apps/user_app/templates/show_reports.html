@@ -169,24 +169,33 @@
                                     <div class="table-full-width">
                                         <table class="table">
                                             <tbody>
+                                                {%for report in reports%}
                                                 <tr>
                                                     <td>
-
+                                                        {{report.id}}
                                                     </td>
                                                     <td>
+                                                        {{report.name}}
+                                                    </td>
+                                                    <td>
+                                                        {{report.user_id}}
+                                                    </td>
+
+                                                    <td>
+                                                        {{report.file_id}}
                                                     </td>
                                                     <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task"
+                                                        <button type="button" rel="tooltip" title="Edit Task"   
                                                             class="btn btn-info btn-simple btn-link">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
                                                         <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-link">
+                                                            class="btn btn-danger btn-simple btn-link"onclick="window.location.href='/my_reports/{{report.id}}/delete'">
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
-
+                                                {%endfor%}
                                             </tbody>
                                         </table>
                                     </div>
