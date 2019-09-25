@@ -12,7 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
-absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
+absolute_path = ''
 
 
 def index(request):
@@ -339,19 +339,16 @@ def delete_file(request, id):
 def contact(request):
     if 'uid' in request.session:
         uid = request.session['uid']
-        try:
-            user = User.objects.get(id=uid)
-            context = {
-                'data': data,
-                'user': user,
+        user = User.objects.get(id=uid)
+        context = {
+            'data': data,
+            'user': user,
             }
-            return render(request, 'login.html', context)
-
-        except:
-            return HttpResponse('error loading user')
         return render(request, 'contact.html', context)
     else:
         return render(request, 'login.html')
+
+
 
 
 def contact_process(request):
