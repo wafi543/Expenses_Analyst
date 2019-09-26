@@ -1,6 +1,20 @@
 type = ['','info','success','warning','danger'];
 
+function transpose(matrix) {
+  return matrix[0].map((col, i) => matrix.map(row => row[i]));
+}
 
+function getMonthBased (monthBased) {
+  var last_max = 0
+  var last_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  for (var x=1; x <= last_values.length; x++) {
+    if (monthBased[x] != null) {
+      if (monthBased[x] > last_max) {last_max = monthBased[x]}
+      last_values[x-1] = monthBased[x]
+    }
+  }
+  return [last_values,last_max]
+}
 
 demo = {
     initPickColor: function(){
@@ -131,34 +145,37 @@ demo = {
 
     initChartist: function(){
         // Type based:
-        var str = document.getElementById('last_json').value;
-        console.log(str)
-        var last_json = JSON.parse(str);
+        var last_str = document.getElementById('last_json').value;
+        var last_json = JSON.parse(last_str);
         var typeBased = last_json['typeBased']['amount'];
         var monthBased = last_json['monthBased']['amount'];
-        console.log(typeBased)
-        console.log(monthBased)
         
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        var last_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        var monthsDict = {'1':'Jan', '2':'Feb', '3':'Mar', '4':'Apr', '5':'May', '6':'Jun', '7':'Jul', '8':'Aug', '9':'Sep', '10':'Oct', '11':'Nov', '12':'Dec'}
-        var last_max = 0
-        for (var x=1; x <= last_values.length; x++) {
-          console.log('x: ' + x + ', monthBased[x]: ' + monthBased[x] + ', monthsDict[x]: ' + monthsDict[x] + ', months[x-1]: ' + months[x-1])
-          if (monthBased[x] != null) {
-            if (monthBased[x] > last_max) {last_max = monthBased[x]}
-            last_values[x-1] = monthBased[x]
-          }
-        }
-        console.log(last_json['maximum'])
-        var dataSales = {
-          labels: months,
-          series: [
-            last_values,
-          ]
-        };
+        var arr = getMonthBased(monthBased)
+        var last_max = arr.pop()
+        var last_values = arr.pop()
 
-        var optionsSales = {
+        // Last Report based on Type
+        var last_type_keys = []
+        var last_type_values = []
+        var count = 1
+        var html_typeBased = ''
+        for (var x in typeBased) {
+          last_type_keys.push(typeBased[x])
+          last_type_values.push(typeBased[x])
+          html_typeBased += '<i class="point color'+count+'"></i> '+x+'  '
+          count++
+        }
+        document.getElementById("last_report_labels").innerHTML = html_typeBased;
+
+        Chartist.Pie('#lastReport_type', {
+          labels: last_type_keys,
+          series: last_type_values
+        });
+
+        // Last Report based on Month
+        var last_data = {labels: months,series: [last_values]}
+        var last_options = {
           lineSmooth: false,
           low: 0,
           high: last_max,
@@ -184,15 +201,98 @@ demo = {
           }]
         ];
 
-        Chartist.Line('#chartHours', dataSales, optionsSales, responsiveSales);
+        Chartist.Line('#lastReport_month', last_data, last_options, responsiveSales)
 
+
+        // All Reports based on Type
+        var allReportsType_labels = []
+        var allReportsType_values = []
+        var allReportsType_str = document.getElementById('reportsType_json').value;
+        var allReportsType = JSON.parse(allReportsType_str)
+        var allReportsType_html = ''
+        count = 1
+        for (type in allReportsType) {
+          allReportsType_labels.push(type)
+          allReportsType_values.push(allReportsType[type])
+          allReportsType_html += '<i class="point color'+count+'"></i> '+type+'  '
+          count++
+        }
+        document.getElementById("AllReports_type_labels").innerHTML = allReportsType_html;
+
+        Chartist.Pie('#allReports_type', {
+          labels: allReportsType_values,
+          series: allReportsType_values
+        })
+
+
+
+        // All Reports based on Month
+                
+        var all_str = document.getElementById('reports_json').value;
+        var reports_json = JSON.parse(all_str);
+        var allReports_values = []
+        var all_max = 0
+        for (key in reports_json) {
+          var monthBased = reports_json[key]['monthBased']['amount'];
+          var arr = getMonthBased(monthBased)
+          var max = arr.pop()
+          var values = arr.pop()
+          allReports_values.push(values)
+          if (max > all_max) {all_max = max}
+        }
+
+        var all_data = {labels: months,series: allReports_values}
+        var all_options = {
+          lineSmooth: false,
+          low: 0,
+          high: all_max,
+          showArea: true,
+          height: "245px",
+          axisX: {
+            showGrid: false,
+          },
+          lineSmooth: Chartist.Interpolation.simple({
+            divisor: 3
+          }),
+          showLine: false,
+          showPoint: false,
+        };
+        Chartist.Line('#allReports_month', all_data, all_options, responsiveSales)
+
+        var reports_name_str = document.getElementById('reports_name').value;
+        var reports_name = JSON.parse(reports_name_str);
+        var count = 1
+        var reportsNames_html = ''
+        var reports_names = []
+        for (id in reports_name) {
+          reports_names.push(reports_name[id])
+          reportsNames_html += '<i class="point color'+count+'"></i> '+reports_name[id]+'  '
+          count++
+        }
+        document.getElementById("AllReports_month_labels").innerHTML = reportsNames_html;
+
+
+
+        // All Reports Based On Year
+        reports_year = []
+        reports_year_labels = []
+        console.log(typeBased)
+        for (key in reports_json) {
+          var values = []
+          var typeBased = reports_json[key]['typeBased']['amount'];
+
+          for (type in typeBased) {
+            values.push(typeBased[type])
+          }
+          reports_year_labels.push(reports_json[key]['year'])
+          reports_year.push(values)
+        }
+        console.log(typeBased)
+        reports_year = transpose(reports_year)
 
         var data = {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          series: [
-            [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895],
-            [412, 243, 280, 580, 453, 353, 300, 364, 368, 410, 636, 695]
-          ]
+          labels: reports_year_labels,
+          series: reports_year
         };
 
         var options = {
@@ -200,7 +300,7 @@ demo = {
             axisX: {
                 showGrid: false
             },
-            height: "245px"
+            height: "280px"
         };
 
         var responsiveOptions = [
@@ -214,45 +314,8 @@ demo = {
           }]
         ];
 
-        Chartist.Bar('#chartActivity', data, options, responsiveOptions);
-
-        var dataPreferences = {
-            series: [
-                [25, 30, 20, 45]
-            ]
-        };
-
-        var optionsPreferences = {
-            donut: true,
-            donutWidth: 40,
-            startAngle: 0,
-            total: 100,
-            showLabel: false,
-            axisX: {
-                showGrid: false
-            }
-        };
-
-        var last_type_keys = []
-        var last_type_values = []
-        var count = 1
-        var html_typeBased = ''
-        for (var x in typeBased) {
-          last_type_keys.push(typeBased[x])
-          last_type_values.push(typeBased[x])
-          html_typeBased += '<i class="point color'+count+'"></i> '+x+'  '
-          count++
-        }
-        count = 0
-        document.getElementById("last_report_labels").innerHTML = html_typeBased;
-
-        Chartist.Pie('#lastReport', dataPreferences, optionsPreferences);
-
-        Chartist.Pie('#lastReport', {
-          labels: last_type_keys,
-          series: last_type_values
-        });
-
+        Chartist.Bar('#allReports_year', data, options, responsiveOptions);
+        document.getElementById("AllReports_year_labels").innerHTML = allReportsType_html;
     },
 
     /*initGoogleMaps: function(){

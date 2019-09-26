@@ -128,7 +128,16 @@
                                                 <td>{{file.name}}</td>
                                                 <td>{{file.created_at}}</td>
                                                 <td>{{file.path}}</td>
-                                                <td><a href="/my_files/{{file.id}}/view">View</a> | <a href="/files/{{file.path}}">Dowload</a> | <a href="/my_files/{{file.id}}/delete">Delete</a></td>
+                                                <td><a href="/my_files/{{file.id}}/view">View</a> | <a
+                                                        href="/files/{{file.path}}">Dowload</a> | <a
+                                                        href="" onclick="clicked(event)">Delete</a></td>
+                                                <script>
+                                                    function clicked(e) {
+                                                        if (confirm('Are you sure about deleting {{file.name}}?'))
+                                                            window.location.replace('/my_files/{{file.id}}/delete');
+                                                        e.preventDefault();
+                                                    }
+                                                </script>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -144,30 +153,7 @@
 
             <footer class="footer">
                 <div class="container-fluid">
-                    <nav class="pull-left">
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Company
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Portfolio
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Blog
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <nav class="pull-left"></nav>
                     <p class="copyright pull-right">
                         &copy;
                         <script>document.write(new Date().getFullYear())</script> <a

@@ -38,20 +38,27 @@ def index(request):
         try:
             reports = Report.objects.filter(user=user)
             result = {}
-            all_reports = {}
+            reports_name = {}
+            allReports = {}
             for report in reports:
                 with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
                     report_data = json.load(f)
                     result[report.id] = report_data
+                    reports_name[report.id] = report.name
                     dicti = report_data['typeBased']['amount']
                     for key in dicti:
-                        if key in all_reports.keys():
-                            all_reports[key] += dicti[key]
+                        if key in allReports.keys():
+                            allReports[key] += dicti[key]
                         else:
-                            all_reports[key] = dicti[key]
-            print(all_reports)
+                            allReports[key] = dicti[key]
+            print(allReports)
+
             result = json.dumps(result)
-            context['result'] = result
+            reports_name = json.dumps(reports_name)
+            allReports = json.dumps(allReports)
+            context['reports_json'] = result
+            context['reports_name'] = reports_name
+            context['reportsType_json'] = allReports
         except:
             print('Error loading all reports')
 
@@ -131,7 +138,7 @@ def login(request):
         if bcrypt.checkpw(request.POST['password'].encode(), user.password.encode()):
             print("password match")
             request.session['uid'] = user.id
-            request.session['isAdmin']= user.isAdmin
+            request.session['isAdmin'] = user.isAdmin
             print(request.session['isAdmin'])
             return redirect('/')
         else:
@@ -172,15 +179,17 @@ def profile(request):
     else:
         redirect('/')
 
-
 def update_profile(request):
     request.session['errors'] = {}
     try:
         user = User.objects.get(id=request.POST['id'])
         if not NAME_REGEX.match(request.POST['fname']):
             request.session['errors']['fname'] = 'First name must contain at least two letters and contains only letters'
+            return redirect('/profile')
         if not NAME_REGEX.match(request.POST['lname']):
             request.session['errors']['lname'] = 'Last name must contain at least two letters and contains only letters'
+            return redirect('/profile')
+
         if not EMAIL_REGEX.match(request.POST['email']):
             request.session['errors']['email'] = 'Invalid email address'
             return redirect('/profile')
@@ -188,27 +197,26 @@ def update_profile(request):
         if len(request.POST['password']) > 0:
             if len(request.POST['password']) < 8:
                 request.session['errors']['password'] = 'Your password must be at least 8 characters'
+                return redirect('/profile')
             if request.POST['password'] != request.POST['confirm']:
                 request.session['errors']['confirm'] = 'Passwords does not match'
+                return redirect('/profile')
 
         if(user.email != request.POST['email']):
             if User.objects.filter(email=request.POST['email']).exists():
                 request.session['errors']['email'] = 'Email is already exist'
                 return redirect('/profile')
 
-        if not 'errors' in request.session:
-            user.first_name = request.POST['fname']
-            user.last_name = request.POST['lname']
-            user.email = request.POST['email']
-            if len(request.POST['password']) > 0:
-                pw_hash = bcrypt.hashpw(
-                    request.POST['password'].encode(), bcrypt.gensalt())
-                user.password = pw_hash
-            user.save()
-            errors['done'] = 'Profile has been updated successfully'
-            return redirect('/profile')
-        else:
-            return redirect('/profile')
+        user.first_name = request.POST['fname']
+        user.last_name = request.POST['lname']
+        user.email = request.POST['email']
+        if len(request.POST['password']) > 0:
+            pw_hash = bcrypt.hashpw(
+                request.POST['password'].encode(), bcrypt.gensalt())
+            user.password = pw_hash
+        user.save()
+        request.session['errors']['done'] = 'Profile has been updated successfully'
+        return redirect('/profile')
     except:
         HttpResponse('User id not found')
 
@@ -253,7 +261,7 @@ def upload_file(request):
     # send file to API
     f = open(f'apps/user_app/static/files/{file_path}', 'r')
 
-    reader = csv.DictReader(f, fieldnames=("date", "type", "amount", "income"))
+    reader = csv.DictReader(f, fieldnames=("date", "type", "amount", 'income', 'limit','category', 'target'))
     out = json.dumps([row for row in reader])
 
     print(out)
@@ -315,6 +323,7 @@ def view_file(request, id):
     else:
         return render(request, 'login.html')
 
+
 def delete_file(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -324,11 +333,10 @@ def delete_file(request, id):
             os.remove(f'apps/user_app/static/files/{file.path}')
         except:
             print('File not found')
-        if request.session['isAdmin']== False:
+        if request.session['isAdmin'] == False:
             return redirect('/my_files')
         else:
             return redirect('/admin_dashboard/show_files')
-
 
     else:
         return render(request, 'login.html')
@@ -340,7 +348,7 @@ def contact(request):
         context = {
             'data': data,
             'user': user,
-            }
+        }
         return render(request, 'contact.html', context)
     else:
         return render(request, 'login.html')
@@ -350,40 +358,17 @@ def contact_process(request):
     errors = {}
     context = {'data': data}
     uid = str(request.session['uid'])
-    time = datetime.datetime.now()
-    time = str(time.strftime("%d_%m_%y_%H_%M_%S"))
     if request.method == "GET":
         print("a GET request is being made to this route")
         return redirect('/contact')
     if request.method == "POST":
         user = User.objects.get(id=uid)
-        uploaded = request.FILES['document']
-        fileName = uploaded.name
-        fileName = fileName.lower()
-        fileSize = uploaded.size
-        print(uploaded.name)
-        print(fileName)
-
-        # check if size is less than 2.6 megabyte
-        if(fileSize > 2621440):
-            errors['file_size'] = "file size is too big"
-            context['errors'] = errors
-            return render(request, 'contact.html', context)
-        if not fileName.endswith('.png') and not fileName.endswith('.jpg'):
-            errors['file_type'] = 'Uploaded file is not an image'
-            context['errors'] = errors
-            return render(request, 'contact.html', context)
-        fileStore = FileSystemStorage()
-        path = f"messages/{uid}_{time}.png"
-        fileStore.save(path, uploaded)
         new_message = Message.objects.create(
-            content=request.POST['content'], path=path, sender=user)
+            content=request.POST['content'], path='path', sender=user)
         new_message.save()
         errors['uploaded'] = 'Your message has been sent successfully, we will review your message soon. Thank you!'
         context['errors'] = errors
         return render(request, 'contact.html', context)
-
-
 def my_reports(request):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -408,23 +393,28 @@ def view_report(request, id):
         try:
             report = Report.objects.get(id=id)
             # open JSON
-            with open(f'apps/user_app/static/reports/{report.path}', 'r') as f:
-                report_json = json.load(f)
+            with open(f'{absolute_path}apps/user_app/static/reports/{report.path}', 'r') as f:
+                data_str = json.load(f)
+                report_json = json.dumps(data_str)
+
         except:
             return HttpResponse('Error. Report not found')
         context = {
             'report': report,
             'json': report_json,
+            'data': data_str,
+            'year': str(data_str['year'])
         }
         return render(request, 'view_report.html', context)
 
     else:
         return render(request, 'login.html')
 
-def delete_user(request,id):
+
+def delete_user(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
-        if request.session['isAdmin']== True:
+        if request.session['isAdmin'] == True:
             try:
                 print('dfg')
                 user = User.objects.get(id=id)
@@ -434,10 +424,9 @@ def delete_user(request,id):
                 print('user not found')
             return redirect('/admin_dashboard/show_users')
 
-
     else:
         return render(request, 'login.html')
-   
+
 
 def delete_report(request, id):
     if 'uid' in request.session:
@@ -445,22 +434,23 @@ def delete_report(request, id):
         try:
             print('dfg')
             report = Report.objects.get(id=id)
-            os.remove(f'{absolute_path}apps/user_app/static/reports/{report.path}')
+            os.remove(
+                f'{absolute_path}apps/user_app/static/reports/{report.path}')
             report.delete()
         except:
             print('Report not found')
-        if request.session['isAdmin']== False:
+        if request.session['isAdmin'] == False:
             return redirect('/my_reports')
         else:
             return redirect('/admin_dashboard/show_reports')
 
-
     else:
         return render(request, 'login.html')
-   
-        
+
+
 def index_admin(request):
     return render(request, 'dashboard.html')
+
 
 def users(request):
      if 'uid' in request.session:
@@ -507,3 +497,58 @@ def show_message(request,id):
         user = User.objects.get(id = message.sender_id)
         context = {'message':message, 'user':user}
         return render(request,'show_message.html',context)
+
+def admin_update_profile(request,id):
+    request.session['errors'] = {}
+    try:
+        user = User.objects.get(id=id)
+        if not NAME_REGEX.match(request.POST['fname']):
+            request.session['errors']['fname'] = 'First name must contain at least two letters and contains only letters'
+            return redirect('/admin_dashboard/{id}/admin_update_profile')
+        if not NAME_REGEX.match(request.POST['lname']):
+            request.session['errors']['lname'] = 'Last name must contain at least two letters and contains only letters'
+            return redirect('/admin_dashboard/{id}/admin_update_profile')
+
+        if not EMAIL_REGEX.match(request.POST['email']):
+            request.session['errors']['email'] = 'Invalid email address'
+            return redirect('/admin_dashboard/{id}/admin_update_profile')
+
+        if len(request.POST['password']) > 0:
+            if len(request.POST['password']) < 8:
+                request.session['errors']['password'] = 'Your password must be at least 8 characters'
+                return redirect('/admin_dashboard/{id}/admin_update_profile')
+            if request.POST['password'] != request.POST['confirm']:
+                request.session['errors']['confirm'] = 'Passwords does not match'
+                return redirect('/admin_dashboard/{id}/admin_update_profile')
+
+        if(user.email != request.POST['email']):
+            if User.objects.filter(email=request.POST['email']).exists():
+                request.session['errors']['email'] = 'Email is already exist'
+                return redirect('/admin_dashboard/{id}/admin_update_profile')
+
+        user.first_name = request.POST['fname']
+        user.last_name = request.POST['lname']
+        user.email = request.POST['email']
+        if len(request.POST['password']) > 0:
+            pw_hash = bcrypt.hashpw(
+                request.POST['password'].encode(), bcrypt.gensalt())
+            user.password = pw_hash
+        user.save()
+        request.session['errors']['done'] = 'Profile has been updated successfully'
+        return redirect('/admin_dashboard/{id}/admin_update_profile')
+    except:
+        HttpResponse('User id not found')
+
+def admin_profile(request,id):
+    if request.session['isAdmin']== True:
+        try:
+            user = User.objects.get(id=id)
+            context = {
+                'data': data,
+                'user': user,
+            }
+        except:
+            return HttpResponse('error loading user')
+        return render(request, 'admin_update_profile.html', context)
+    else:
+        redirect('/')

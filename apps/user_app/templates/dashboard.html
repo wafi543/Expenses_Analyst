@@ -1,4 +1,3 @@
-=======
 <!doctype html>
 <html lang="en">
 
@@ -28,33 +27,23 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
 
     <style>
-        .error {
-            color: red;
-        }
-        .green {
-            color: green
-        }
+        .error {color: red;}
+        .green {color: green}
+
         .point {
             border-radius: 50%;
             width: 10px;
             height: 10px;
             display: inline-block;
         }
-        .color1 {
-            background-color: #21bbe4;
-        }
-        .color2 {
-            background-color: #f7263b;
-        }
-        .color3 {
-            background-color: #fd9429;
-        }
-        .color4 {
-            background-color: #7f4ce3;
-        }
-        .color5 {
-            background-color: #77c413;
-        }
+
+        .color1 {background-color: #21bbe4;}
+        .color2 {background-color: #f7263b;}
+        .color3 {background-color: #fd9429;}
+        .color4 {background-color: #7f4ce3;}
+        .color5 {background-color: #77c413;}
+        .color6 {background-color: #1b60c5;}
+        .color7 {background-color: #4c4c4c;}
     </style>
 </head>
 
@@ -136,12 +125,14 @@
 
             <div class="content">
                 <div class="container-fluid">
+
                     <div class="row">
                         <div class="col-md-7">
                             <div class="card">
                                 <div class="header">
                                     <h4 class="title">New Report</h4>
                                     <p class="category">Adding new file then create its report</p>
+                                    <a href="/files/template.csv">Download template</a>
                                 </div>
                                 <div class="content">
                                     <form action="/upload_file" method="POST" enctype="multipart/form-data">
@@ -176,6 +167,7 @@
                     </div>
 
                     <div class="row">
+                        <input id="last_json" type="hidden" value="{{last_json}}">
                         <div class="col-md-4">
                             <div class="card">
 
@@ -185,8 +177,7 @@
                                     <p class="category">Name: {{last_report.name}}</p>
                                 </div>
                                 <div class="content">
-                                    <input id="last_json" type="hidden" value="{{last_json}}">
-                                    <div id="lastReport" class="ct-chart ct-perfect-fourth"></div>
+                                    <div id="lastReport_type" class="ct-chart ct-perfect-fourth"></div>
 
                                     <div class="footer">
                                         <div id="last_report_labels" class="legend">
@@ -211,17 +202,14 @@
                                     <p class="category">Name: {{last_report.name}}</p>
                                 </div>
                                 <div class="content">
-                                    <input id="typeBased" type="hidden" value="{{result}}">
-                                    <div id="chartHours" class="ct-chart"></div>
+                                    <div id="lastReport_month" class="ct-chart"></div>
                                     <div class="footer">
                                         <div class="legend">
-                                            <!-- <i class="fa fa-circle text-info"></i> Open
-                                            <i class="fa fa-circle text-danger"></i> Click
-                                            <i class="fa fa-circle text-warning"></i> Click Second Time -->
+                                            
                                         </div>
                                         <hr>
                                         <div class="stats">
-                                            <i class="fa fa-history"></i> {{last_report.created_at}}
+                                            <i class="fa fa-clock-o"></i> {{last_report.created_at}}
                                         </div>
                                     </div>
                                 </div>
@@ -230,170 +218,73 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="card ">
+                        <input id="reports_json" type="hidden" value="{{reports_json}}">
+                        <input id="reports_name" type="hidden" value="{{reports_name}}">
+                        <input id="reportsType_json" type="hidden" value="{{reportsType_json}}">
+                        <div class="col-md-4">
+                            <div class="card">
+
                                 <div class="header">
-                                    <h4 class="title">2014 Sales</h4>
-                                    <p class="category">All products including Taxes</p>
+                                    <h4 class="title">All Reports based on Type</h4>
                                 </div>
                                 <div class="content">
-                                    <div id="chartActivity" class="ct-chart"></div>
+                                    <div id="allReports_type" class="ct-chart ct-perfect-fourth"></div>
 
                                     <div class="footer">
-                                        <div class="legend">
-                                            <i class="fa fa-circle text-info"></i> Tesla Model S
-                                            <i class="fa fa-circle text-danger"></i> BMW 5 Series
+                                        <div id="AllReports_type_labels" class="legend">
+                                            
                                         </div>
                                         <hr>
                                         <div class="stats">
-                                            <i class="fa fa-check"></i> Data information certified
+                                            <i class="fa fa-clock-o"></i> {{last_report.created_at}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="card ">
+                        <div class="col-md-8">
+                            <div class="card">
                                 <div class="header">
-                                    <h4 class="title">Tasks</h4>
-                                    <p class="category">Backend development</p>
+                                    <h4 class="title">All Reports based on Month</h4>
                                 </div>
                                 <div class="content">
-                                    <div class="table-full-width">
-                                        <table class="table">
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <input id="checkbox1" type="checkbox">
-                                                            <label for="checkbox1"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Sign contract for "What are conference organizers afraid of?"
-                                                    </td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-xs">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <input id="checkbox2" type="checkbox" checked>
-                                                            <label for="checkbox2"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Lines From Great Russian Literature? Or E-mails From My Boss?
-                                                    </td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-xs">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <input id="checkbox3" type="checkbox">
-                                                            <label for="checkbox3"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Flooded: One year later, assessing what was lost and what was
-                                                        found when a ravaging rain swept through metro Detroit
-                                                    </td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-xs">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <input id="checkbox4" type="checkbox" checked>
-                                                            <label for="checkbox4"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Create 4 Invisible User Experiences you Never Knew About</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-xs">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <input id="checkbox5" type="checkbox">
-                                                            <label for="checkbox5"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Read "Following makes Medium better"</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-xs">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <input id="checkbox6" type="checkbox" checked>
-                                                            <label for="checkbox6"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Unfollow 5 enemies from twitter</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task"
-                                                            class="btn btn-info btn-simple btn-xs">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
+                                    <div id="allReports_month" class="ct-chart"></div>
                                     <div class="footer">
+                                        <div id="AllReports_month_labels" class="legend">
+                                            
+                                        </div>
                                         <hr>
                                         <div class="stats">
-                                            <i class="fa fa-history"></i> Updated 3 minutes ago
+                                            <i class="fa fa-clock-o"></i> {{last_report.created_at}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card ">
+                                <div class="header">
+                                    <h4 class="title">All Reports Based On Year</h4>
+                                    <!-- <p class="category">All products including Taxes</p> -->
+                                </div>
+                                <div class="content">
+                                    <div id="allReports_year" class="ct-chart"></div>
+
+                                    <div class="footer">
+                                        <div id="AllReports_year_labels" class="legend">
+                                        </div>
+                                        <hr>
+                                        <div class="stats">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -402,29 +293,7 @@
             <footer class="footer">
                 <div class="container-fluid">
                     <nav class="pull-left">
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Company
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Portfolio
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Blog
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                        <ul></nav>
                     <p class="copyright pull-right">
                         &copy;
                         <script>document.write(new Date().getFullYear())</script> <a

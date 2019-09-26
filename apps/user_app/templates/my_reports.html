@@ -128,7 +128,15 @@
                                                 <td>{{report.name}}</td>
                                                 <td>{{report.created_at}}</td>
                                                 <td>{{report.path}}</td>
-                                                <td><a href="/my_reports/{{report.id}}/view">View</a> | <a href="/my_reports/{{report.id}}/delete">Delete</a></td>
+                                                <td><a href="/my_reports/{{report.id}}/view">View</a> | <a href=""
+                                                        onclick="clicked(event)">Delete</a></td>
+                                                <script>
+                                                    function clicked(e) {
+                                                        if (confirm('Are you sure about deleting {{report.name}}?'))
+                                                            window.location.replace('/my_reports/{{report.id}}/delete');
+                                                        e.preventDefault();
+                                                    }
+                                                </script>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -144,30 +152,7 @@
 
             <footer class="footer">
                 <div class="container-fluid">
-                    <nav class="pull-left">
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Company
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Portfolio
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Blog
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <nav class="pull-left"></nav>
                     <p class="copyright pull-right">
                         &copy;
                         <script>document.write(new Date().getFullYear())</script> <a

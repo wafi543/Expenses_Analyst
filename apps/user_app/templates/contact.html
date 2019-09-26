@@ -100,15 +100,6 @@
                                             <textarea class="form-control" name="content" rows="15"></textarea>
                                         </div>
                                         <div class="form-group">
-                                            <label for="document">Upload image:</label>
-                                            <input type="file" class="form-control-file" name="document" id="document"
-                                                required>
-                                            {%if errors.file_type%}
-                                            <small class="form-text error">{{errors.file_type}}</small>
-                                            {%endif%}
-                                            {%if errors.file_size%}
-                                            <small class="form-text error">{{errors.file_size}}</small>
-                                            {%endif%}
                                             {% if errors.uploaded %}
                                             <small class="form-text green">{{errors.uploaded}}</small>
                                             {% endif %}
@@ -130,30 +121,7 @@
 
             <footer class="footer">
                 <div class="container-fluid">
-                    <nav class="pull-left">
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Company
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Portfolio
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Blog
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <nav class="pull-left"></nav>
                     <p class="copyright pull-right">
                         &copy;
                         <script>document.write(new Date().getFullYear())</script> <a
