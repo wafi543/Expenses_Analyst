@@ -149,14 +149,7 @@
                                                         </button>
                                                         <button type="button" rel="tooltip" title="Remove"
                                                             class="btn btn-danger btn-simple btn-link"
-                                                            onclick="clicked(event)">
-                                                            <script>
-                                                                function clicked(e) {
-                                                                    if (confirm('Are you sure about deleting {{user.id}}?'))
-                                                                        window.location.replace('/admin_dashboard/{{user.id}}/delete');
-                                                                    e.preventDefault();
-                                                                }
-                                                            </script>
+                                                            onclick="window.location.href='/admin_dashboard/{{user.id}}/delete'">
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </td>

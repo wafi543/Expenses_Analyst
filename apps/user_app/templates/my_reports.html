@@ -128,17 +128,9 @@
                                                 <td>{{report.name}}</td>
                                                 <td>{{report.created_at}}</td>
                                                 <td>{{report.path}}</td>
-                                                <td><a href="/my_reports/{{report.id}}/view">View</a> | <a href=""
-                                                        onclick="clicked(event)">Delete</a></td>
-                                                <script>
-                                                    function clicked(e) {
-                                                        if (confirm('Are you sure about deleting {{report.name}}?'))
-                                                            window.location.replace('/my_reports/{{report.id}}/delete');
-                                                        e.preventDefault();
-                                                    }
-                                                </script>
-                                            </tr>
-                                            {% endfor %}
+                                                <td><a href="/my_reports/{{report.id}}/view">View</a> | <a
+                                                        href="/my_reports/{{report.id}}/delete">Delete</a></td>
+                                                {% endfor %}
                                         </tbody>
                                     </table>
 
