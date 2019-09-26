@@ -473,7 +473,7 @@ def users(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         users = User.objects.all()
-        context = {'users': users, 'user': user}
+        context = {'users': users, 'user': user,'data': data}
         return render(request, 'show_users.html', context)
     else:
         return redirect("/logout")
@@ -484,7 +484,7 @@ def files(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         files = File.objects.all()
-        context = {'files': files, 'user': user}
+        context = {'files': files, 'user': user,'data': data}
         return render(request, 'show_files.html', context)
     else:
         return redirect("/logout")
@@ -495,7 +495,7 @@ def reports(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         reports = Report.objects.all()
-        context = {'reports': reports, 'user': user}
+        context = {'reports': reports, 'user': user,'data': data}
         return render(request, 'show_reports.html', context)
     else:
         return redirect("/logout")
@@ -506,7 +506,7 @@ def show_messages(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         messages = Message.objects.all()
-        context = {'messages': messages, 'user': user}
+        context = {'messages': messages, 'user': user,'data': data}
         return render(request, 'show_messages.html', context)
     else:
         return redirect("/logout")
@@ -518,7 +518,7 @@ def show_message(request, id):
         user = User.objects.get(id=uid)
         message = Message.objects.get(id=id)
         user = User.objects.get(id=message.sender_id)
-        context = {'message': message, 'user': user}
+        context = {'message': message, 'user': user,'data': data}
         return render(request, 'show_message.html', context)
     else:
         return redirect("/logout")
