@@ -31,5 +31,5 @@ class Message(models.Model):
     content = models.TextField()
     path = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
-    sender = models.ForeignKey(User, related_name="messages", on_delete=models.PROTECT)
+    sender = models.ForeignKey(User, related_name="messages", on_delete=models.CASCADE)
 
