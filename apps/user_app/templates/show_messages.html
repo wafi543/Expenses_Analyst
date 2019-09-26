@@ -1,3 +1,17 @@
+<!-- 
+=========================================================
+ Light Bootstrap Dashboard - v2.0.1
+=========================================================
+
+ Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard
+ Copyright 2019 Creative Tim (https://www.creative-tim.com)
+ Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard/blob/master/LICENSE)
+
+ Coded by Creative Tim
+
+=========================================================
+
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.  -->
 {%load static %}
 <!DOCTYPE html>
 
@@ -8,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{% static 'bs/assets/img/apple-icon.png' %}">
     <link rel="icon" type="image/png" href="{% static 'bs/assets/img/favicon.ico' %}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>{{data.app_name}}</title>
+    <title>Light Bootstrap Dashboard - Free Bootstrap 4 Admin Dashboard by Creative Tim</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
         name='viewport' />
     <!--     Fonts and icons     -->
@@ -23,13 +37,18 @@
 
 <body>
     <div class="wrapper">
-        <div class="sidebar" data-image="{% static 'bs/assets/img/sidebar-5.jpg' %}">
+        <div class="sidebar" data-image="{% static 'bs/assets/img/sidebar-5.jpg' %}" data-color="purple">
+            <!--
+           Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+   
+           Tip 2: you can also add an image using data-image tag
+       -->
             <div class="sidebar-wrapper">
-                <div class="logo">
-                    <a href="./" class="simple-text">
-                        EXPENSES ANALYST
-                    </a>
-                </div>
+                    <div class="logo">
+                        <a href="" class="simple-text">
+                            EXPENSES ANALYST
+                        </a>
+                    </div>
                 <ul class="nav">
                     <li>
                         <a class="nav-link" href="./show_users">
@@ -96,51 +115,39 @@
                         <div class="col-md-6">
                             <div class="card  card-tasks">
                                 <div class="card-header ">
-                                    <h4 class="card-title">Files</h4>
-                                    <!--                                     <p class="card-category">Backend development</p> -->
+                                    <h4 class="card-title">Messages</h4>
                                 </div>
                                 <div class="card-body ">
                                     <div class="table-full-width">
+
+
                                         <table class="table">
-                                            <thead>
-                                                <th>File id</th>
-                                                <th>File name</th>
-                                                <th>User id</th>
-                                                <th>Action</th>
-                                            </thead>
                                             <tbody>
-                                                {%for file in files%}
+                                                {%for message in messages%}
                                                 <tr>
+
                                                     <td>
-                                                        {{file.id}}
+                                                        {{message.id}}
                                                     </td>
                                                     <td>
-                                                        {{file.name}}
+                                                        {{user.first_name}}
                                                     </td>
                                                     <td>
-                                                        {{file.user_id}}
+                                                        {{message.content}} </td>
+                                                    <td>
+                                                        {{message.sender_id}}
                                                     </td>
+
+
                                                     <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Open File"
-                                                            class="btn btn-info btn-simple btn-link">
-                                                            <a href="/my_files/{{file.id}}/view">View</a> </button>
-                                                        <button type="button" rel="tooltip" title="Remove"
-                                                            class="btn btn-danger btn-simple btn-link"
-                                                            onclick="clicked(event)">
-                                                            <script>
-                                                                function clicked(e) {
-                                                                    if (confirm('Are you sure about deleting {{file.name}}?'))
-                                                                        window.location.replace('/my_files/{{file.id}}/delete');
-                                                                    e.preventDefault();
-                                                                }
-                                                            </script>
-
-                                                            <i class="fa fa-times"></i>
-
-                                                        </button>
+                                                        <button type="button" rel="tooltip" title="Open Message"
+                                                            class="btn btn-info btn-simple btn-link"
+                                                            onclick="window.location.href='/admin_dashboard/{{message.id}}/show_message'">
+                                                            <i class="fa fa-envelope-open"></i>
                                                     </td>
                                                 </tr>
-                                                {%endfor%}
+                                                {% endfor %}
+
                                             </tbody>
                                         </table>
                                     </div>

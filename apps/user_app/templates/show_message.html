@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <title>{{data.app_name}}</title>
 
     {% load static %}
@@ -43,40 +44,33 @@
         <div class="sidebar" data-color="purple" data-image="{% static 'assets/img/sidebar-5.jpg' %}">
             <div class="sidebar-wrapper">
                 <div class="logo">
-                    <a href="http://www.creative-tim.com" class="simple-text">
-                        {{data.app_name}}
+                    <a href="" class="simple-text">
+                        EXPENSES ANALYST
                     </a>
                 </div>
-
                 <ul class="nav">
                     <li>
-                        <a href="/">
-                            <i class="pe-7s-graph"></i>
-                            <p>Dashboard</p>
+                        <a href="/admin_dashboard/show_users">
+                            <i class="pe-7s-users"></i>
+                            <p> Users</p>
                         </a>
                     </li>
                     <li>
-                        <a href="/profile">
-                            <i class="pe-7s-user"></i>
-                            <p>My Profile</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/my_files">
+                        <a href="/admin_dashboard/show_files">
                             <i class="pe-7s-file"></i>
-                            <p>My Files</p>
+                            <p>Files </p>
                         </a>
                     </li>
                     <li>
-                        <a href="/my_reports">
+                        <a href="/admin_dashboard/show_reports">
                             <i class="pe-7s-news-paper"></i>
-                            <p>My Reports</p>
+                            <p>Reports</p>
                         </a>
                     </li>
-                    <li class="active active-pro">
-                        <a href="">
+                    <li>
+                        <a href="/admin_dashboard/show_messages">
                             <i class="pe-7s-chat"></i>
-                            <p>Contact Support</p>
+                            <p>Messages</p>
                         </a>
                     </li>
                 </ul>
@@ -88,28 +82,20 @@
             <div class="content">
                 <div class="container-fluid">
                     <div class="row">
+                        <div class="col d-flex justify-content-end">
+                            <a href="/admin_dashboard/show_messages" class="btn btn-outline-dark btn-sm">Go Back</a>
+
+                        </div>
+                    </div>
+                    <div class="row mt-4">
                         <div class="col-md-10">
                             <div class="card">
                                 <div class="header">
-                                    <h4 class="title">Contact Support</h4>
-                                    <p class="category">Explain your problem</p>
+                                    <h4 class="title">Message From <b>{{user.first_name}}</b></h4>
+                                    <i>{{user.email}}</i>
                                 </div>
                                 <div class="content">
-                                    <form action="/contact_process" method="POST" enctype="multipart/form-data">
-                                        {% csrf_token %}
-                                        <div class="form-group">
-                                            <textarea class="form-control" name="content" rows="15"></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            {% if errors.uploaded %}
-                                            <small class="form-text green">{{errors.uploaded}}</small>
-                                            {% endif %}
-                                            {% if errors.length %}
-                                            <small class="form-text error">{{errors.length}}</small>
-                                            {% endif %}
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Send</button>
-                                    </form>
+                                    {{message.content}}
                                 </div>
                             </div>
                         </div>
@@ -125,7 +111,30 @@
 
             <footer class="footer">
                 <div class="container-fluid">
-                    <nav class="pull-left"></nav>
+                    <nav class="pull-left">
+                        <ul>
+                            <li>
+                                <a href="#">
+                                    Home
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Company
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Portfolio
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Blog
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                     <p class="copyright pull-right">
                         &copy;
                         <script>document.write(new Date().getFullYear())</script> <a
