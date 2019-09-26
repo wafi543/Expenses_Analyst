@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'Expenses_Analyst.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Expenses_analyst',
+        'NAME': 'expenses_analyst',
         'USER': 'postgres',
-        'PASSWORD':'1234',
+        'PASSWORD':'postgres',
         'HOST': 'localhost',
         'POST': '5432',
     }
