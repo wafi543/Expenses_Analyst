@@ -181,6 +181,7 @@ def profile(request):
     else:
         redirect('/')
 
+
 def update_profile(request):
     request.session['errors'] = {}
     try:
@@ -287,6 +288,8 @@ def upload_file(request):
 
 
 def my_files(request):
+    if request.session['isAdmin'] == True:
+        return redirect('/admin_dashboard/show_files')
     if 'uid' in request.session:
         uid = request.session['uid']
         try:
@@ -344,6 +347,7 @@ def delete_file(request, id):
     else:
         return render(request, 'login.html')
 
+
 def contact(request):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -380,6 +384,8 @@ def contact_process(request):
 
 
 def my_reports(request):
+    if request.session['isAdmin'] == True:
+        return redirect('/admin_dashboard/show_reports')
     if 'uid' in request.session:
         uid = request.session['uid']
         try:
@@ -465,96 +471,110 @@ def index_admin(request):
 
 
 def users(request):
-     if 'uid' in request.session:
+    if 'uid' in request.session and request.session['isAdmin'] == True:
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         users = User.objects.all()
+        context = {'users': users, 'user': user}
+        return render(request, 'show_users.html', context)
+    else:
+        return redirect("/logout")
 
-        context = {'users': users,'user': user}
-        return render(request, 'show_users.html',context)
 
 def files(request):
-    if 'uid' in request.session and request.session['isAdmin']== True:
+    if 'uid' in request.session and request.session['isAdmin'] == True:
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         files = File.objects.all()
-        context = {'files': files,'user':user}
-        return render(request, 'show_files.html',context)
+        context = {'files': files, 'user': user}
+        return render(request, 'show_files.html', context)
     else:
-        return render(request, 'login.html') 
+        return redirect("/logout")
+
 
 def reports(request):
-    if 'uid' in request.session and request.session['isAdmin']== True:
+    if 'uid' in request.session and request.session['isAdmin'] == True:
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         reports = Report.objects.all()
-        context ={'reports':reports,'user':user}
-        return render(request, 'show_reports.html',context)
+        context = {'reports': reports, 'user': user}
+        return render(request, 'show_reports.html', context)
+    else:
+        return redirect("/logout")
 
 
 def show_messages(request):
-    if 'uid' in request.session and request.session['isAdmin']== True:
+    if 'uid' in request.session and request.session['isAdmin'] == True:
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         messages = Message.objects.all()
-        context = {'messages':messages,'user':user}
-        return render(request,'show_messages.html',context)
+        context = {'messages': messages, 'user': user}
+        return render(request, 'show_messages.html', context)
+    else:
+        return redirect("/logout")
 
 
-def show_message(request,id):
-    if 'uid' in request.session and request.session['isAdmin']== True:
+def show_message(request, id):
+    if 'uid' in request.session and request.session['isAdmin'] == True:
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         message = Message.objects.get(id=id)
-        user = User.objects.get(id = message.sender_id)
-        context = {'message':message, 'user':user}
-        return render(request,'show_message.html',context)
+        user = User.objects.get(id=message.sender_id)
+        context = {'message': message, 'user': user}
+        return render(request, 'show_message.html', context)
+    else:
+        return redirect("/logout")
 
-def admin_update_profile(request,id):
-    request.session['errors'] = {}
-    try:
-        user = User.objects.get(id=id)
-        if not NAME_REGEX.match(request.POST['fname']):
-            request.session['errors']['fname'] = 'First name must contain at least two letters and contains only letters'
 
-            
-            return redirect('/admin_dashboard/show_users')
-        if not NAME_REGEX.match(request.POST['lname']):
-            request.session['errors']['lname'] = 'Last name must contain at least two letters and contains only letters'
-            return redirect('/admin_dashboard/show_users')
+def admin_update_profile(request, id):
+    if 'uid' in request.session and request.session['isAdmin'] == True:
+        request.session['errors'] = {}
+        try:
+            user = User.objects.get(id=id)
+            if not NAME_REGEX.match(request.POST['fname']):
+                request.session['errors']['fname'] = 'First name must contain at least two letters and contains only letters'
+                return redirect(f'/admin_dashboard/{id}/admin_profile')
 
-        if not EMAIL_REGEX.match(request.POST['email']):
-            request.session['errors']['email'] = 'Invalid email address'
-            return redirect('/admin_dashboard/show_users')
-
-        if len(request.POST['password']) > 0:
-            if len(request.POST['password']) < 8:
-                request.session['errors']['password'] = 'Your password must be at least 8 characters'
                 return redirect('/admin_dashboard/show_users')
-            if request.POST['password'] != request.POST['confirm']:
-                request.session['errors']['confirm'] = 'Passwords does not match'
-                return redirect('/admin_dashboard/show_users')
+            if not NAME_REGEX.match(request.POST['lname']):
+                request.session['errors']['lname'] = 'Last name must contain at least two letters and contains only letters'
+                return redirect(f'/admin_dashboard/{id}/admin_profile')
 
-        if(user.email != request.POST['email']):
-            if User.objects.filter(email=request.POST['email']).exists():
-                request.session['errors']['email'] = 'Email is already exist'
-                return redirect('/admin_dashboard/show_users')
+            if not EMAIL_REGEX.match(request.POST['email']):
+                request.session['errors']['email'] = 'Invalid email address'
+                return redirect(f'/admin_dashboard/{id}/admin_profile')
 
-        user.first_name = request.POST['fname']
-        user.last_name = request.POST['lname']
-        user.email = request.POST['email']
-        if len(request.POST['password']) > 0:
-            pw_hash = bcrypt.hashpw(
-                request.POST['password'].encode(), bcrypt.gensalt())
-            user.password = pw_hash
-        user.save()
-        request.session['errors']['done'] = 'Profile has been updated successfully'
-        return redirect('/admin_dashboard/show_users')
-    except:
-        HttpResponse('User id not found')
+            if len(request.POST['password']) > 0:
+                if len(request.POST['password']) < 8:
+                    request.session['errors']['password'] = 'Your password must be at least 8 characters'
+                    return redirect('/admin_dashboard/show_users')
+                if request.POST['password'] != request.POST['confirm']:
+                    request.session['errors']['confirm'] = 'Passwords does not match'
+                    return redirect(f'/admin_dashboard/{id}/admin_profile')
 
-def admin_profile(request,id):
-    if request.session['isAdmin']== True:
+            if(user.email != request.POST['email']):
+                if User.objects.filter(email=request.POST['email']).exists():
+                    request.session['errors']['email'] = 'Email is already exist'
+                    return redirect(f'/admin_dashboard/{id}/admin_profile')
+
+            user.first_name = request.POST['fname']
+            user.last_name = request.POST['lname']
+            user.email = request.POST['email']
+            if len(request.POST['password']) > 0:
+                pw_hash = bcrypt.hashpw(
+                    request.POST['password'].encode(), bcrypt.gensalt())
+                user.password = pw_hash
+            user.save()
+            request.session['errors']['done'] = 'Profile has been updated successfully'
+            return redirect('/admin_dashboard/show_users')
+        except:
+            HttpResponse('User id not found')
+    else:
+        return redirect("/logout")
+
+
+def admin_profile(request, id):
+    if request.session['isAdmin'] == True:
         try:
             user = User.objects.get(id=id)
             context = {
@@ -565,4 +585,4 @@ def admin_profile(request,id):
             return HttpResponse('error loading user')
         return render(request, 'admin_update_profile.html', context)
     else:
-        redirect('/')
+        return redirect("/logout")
