@@ -430,20 +430,19 @@ def view_report(request, id):
 
 
 def delete_user(request, id):
-    if 'uid' in request.session:
-        uid = request.session['uid']
-        if request.session['isAdmin'] == True:
-            try:
-                print('dfg')
-                user = User.objects.get(id=id)
+    if request.session['uid'] == id:
+        return redirect('/admin_dashboard/show_users')
+    if request.session['isAdmin'] == True:
+        try:
+            user = User.objects.get(id=id)
             # os.remove(f'apps/user_app/static/reports/{report.path}')
-                user.delete()
-            except:
-                print('user not found')
-            return redirect('/admin_dashboard/show_users')
+            user.delete()
+        except:
+            print('user not found')
+        return redirect('/admin_dashboard/show_users')
 
     else:
-        return render(request, 'login.html')
+        return redirect('/logout')
 
 
 def delete_report(request, id):

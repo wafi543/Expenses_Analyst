@@ -126,7 +126,14 @@
                                                             <a href="/my_files/{{file.id}}/view">View</a> </button>
                                                         <button type="button" rel="tooltip" title="Remove"
                                                             class="btn btn-danger btn-simple btn-link"
-                                                            onclick="window.location.href='/my_files/{{file.id}}/delete'">
+                                                            onclick="clicked(event)">
+                                                            <script>
+                                                                function clicked(e) {
+                                                                    if (confirm('Are you sure about deleting {{file.name}}?'))
+                                                                        window.location.replace('/my_files/{{file.id}}/delete');
+                                                                    e.preventDefault();
+                                                                }
+                                                            </script>
 
                                                             <i class="fa fa-times"></i>
 
