@@ -16,6 +16,8 @@ urlpatterns = [
     url(r'^admin_dashboard/show_reports$', views.reports),
     url(r'^admin_dashboard/(?P<id>[0-9]+)/delete$', views.delete_user),
     url(r'^admin_dashboard/show_messages$', views.show_messages),
+    url(r'^admin_dashboard/(?P<id>[0-9]+)/admin_profile$', views.admin_profile),
+    url(r'^admin_dashboard/(?P<id>[0-9]+)/admin_update_profile$', views.admin_update_profile),
     url(r'^admin_dashboard/(?P<id>[0-9]+)/show_message$', views.show_message),
     url(r'^profile$', views.profile),
     url(r'^update_profile$', views.update_profile),
