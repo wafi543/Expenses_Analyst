@@ -504,27 +504,29 @@ def admin_update_profile(request,id):
         user = User.objects.get(id=id)
         if not NAME_REGEX.match(request.POST['fname']):
             request.session['errors']['fname'] = 'First name must contain at least two letters and contains only letters'
-            return redirect('/admin_dashboard/{id}/admin_update_profile')
+
+            
+            return redirect('/admin_dashboard/show_users')
         if not NAME_REGEX.match(request.POST['lname']):
             request.session['errors']['lname'] = 'Last name must contain at least two letters and contains only letters'
-            return redirect('/admin_dashboard/{id}/admin_update_profile')
+            return redirect('/admin_dashboard/show_users')
 
         if not EMAIL_REGEX.match(request.POST['email']):
             request.session['errors']['email'] = 'Invalid email address'
-            return redirect('/admin_dashboard/{id}/admin_update_profile')
+            return redirect('/admin_dashboard/show_users')
 
         if len(request.POST['password']) > 0:
             if len(request.POST['password']) < 8:
                 request.session['errors']['password'] = 'Your password must be at least 8 characters'
-                return redirect('/admin_dashboard/{id}/admin_update_profile')
+                return redirect('/admin_dashboard/show_users')
             if request.POST['password'] != request.POST['confirm']:
                 request.session['errors']['confirm'] = 'Passwords does not match'
-                return redirect('/admin_dashboard/{id}/admin_update_profile')
+                return redirect('/admin_dashboard/show_users')
 
         if(user.email != request.POST['email']):
             if User.objects.filter(email=request.POST['email']).exists():
                 request.session['errors']['email'] = 'Email is already exist'
-                return redirect('/admin_dashboard/{id}/admin_update_profile')
+                return redirect('/admin_dashboard/show_users')
 
         user.first_name = request.POST['fname']
         user.last_name = request.POST['lname']
@@ -535,7 +537,7 @@ def admin_update_profile(request,id):
             user.password = pw_hash
         user.save()
         request.session['errors']['done'] = 'Profile has been updated successfully'
-        return redirect('/admin_dashboard/{id}/admin_update_profile')
+        return redirect('/admin_dashboard/show_users')
     except:
         HttpResponse('User id not found')
 
