@@ -17,6 +17,8 @@ absolute_path = ''
 
 def index(request):
     if 'uid' in request.session:
+        if request.session['isAdmin'] == True:
+            return redirect('/admin_dashboard/show_users')
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         context = {
