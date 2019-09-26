@@ -102,6 +102,12 @@
                                 <div class="card-body ">
                                     <div class="table-full-width">
                                         <table class="table">
+                                            <thead>
+                                                <th>File id</th>
+                                                <th>File name</th>
+                                                <th>User id</th>
+                                                <th>Action</th>
+                                            </thead>
                                             <tbody>
                                                 {%for file in files%}
                                                 <tr>
@@ -117,12 +123,12 @@
                                                     <td class="td-actions text-right">
                                                         <button type="button" rel="tooltip" title="Open File"
                                                             class="btn btn-info btn-simple btn-link">
-                                                            <a href="/my_files/{{file.id}}/view">View</a>                                                        </button>
+                                                            <a href="/my_files/{{file.id}}/view">View</a> </button>
                                                         <button type="button" rel="tooltip" title="Remove"
                                                             class="btn btn-danger btn-simple btn-link"
                                                             onclick="window.location.href='/my_files/{{file.id}}/delete'">
-                                                            
-<i class="fa fa-times"></i>
+
+                                                            <i class="fa fa-times"></i>
 
                                                         </button>
                                                     </td>
@@ -146,28 +152,6 @@
             <footer class="footer">
                 <div class="container-fluid">
                     <nav>
-                        <ul class="footer-menu">
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Company
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Portfolio
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Blog
-                                </a>
-                            </li>
-                        </ul>
                         <p class="copyright text-center">
                             ©
                             <script>
@@ -281,7 +265,7 @@
         // Javascript method's body can be found in assets/js/demos.js
         demo.initDashboardPageCharts();
 
-        demo.showNotification();
+        // demo.showNotification();
 
     });
 </script>

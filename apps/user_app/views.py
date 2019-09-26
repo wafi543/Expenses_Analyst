@@ -140,6 +140,8 @@ def login(request):
             request.session['uid'] = user.id
             request.session['isAdmin'] = user.isAdmin
             print(request.session['isAdmin'])
+            if request.session['isAdmin'] == True:
+                return redirect('/admin_dashboard/show_users')
             return redirect('/')
         else:
             uInfo = {
@@ -459,7 +461,7 @@ def delete_report(request, id):
 
 
 def index_admin(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'admin_dashboard.html')
 
 
 def users(request):

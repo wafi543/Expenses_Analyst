@@ -121,6 +121,13 @@
                                 <div class="card-body ">
                                     <div class="table-full-width">
                                         <table class="table">
+                                            <thead>
+                                                <th>Report id</th>
+                                                <th>Report name</th>
+                                                <th>User id</th>
+                                                <th>File id</th>
+                                                <th>Action</th>
+                                            </thead>
                                             <tbody>
                                                 {%for report in reports%}
                                                 <tr>
@@ -303,7 +310,7 @@
         // Javascript method's body can be found in assets/js/demos.js
         demo.initDashboardPageCharts();
 
-        demo.showNotification();
+        // demo.showNotification();
 
     });
 </script>
