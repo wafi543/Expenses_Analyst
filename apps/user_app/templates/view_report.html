@@ -112,6 +112,18 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="row">
+                            <div class="col">
+                                <p style="font-size: 14px;">Mean: {{data.mean}}</p>
+                            </div>
+                            <div class="col">
+                                <p style="font-size: 14px;">Median: {{data.median}}</p>
+                            </div>
+                            <div class="col">
+                                <p style="font-size: 14px;">Sum: {{data.sum}}</p>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="col">
                         <h4>Target % from income</h4>
@@ -237,7 +249,7 @@
 
     });
     function clicked(e) {
-        if (confirm('Are you sure about deletin {{report.name}}?'))
+        if (confirm('Are you sure about deleting {{report.name}}?'))
             window.location.replace('/my_reports/{{report.id}}/delete');
         e.preventDefault();
     }

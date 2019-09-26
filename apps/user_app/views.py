@@ -263,7 +263,8 @@ def upload_file(request):
     # send file to API
     f = open(f'apps/user_app/static/files/{file_path}', 'r')
 
-    reader = csv.DictReader(f, fieldnames=("date", "type", "amount", 'income', 'limit','category', 'target'))
+    reader = csv.DictReader(f, fieldnames=(
+        "date", "type", "amount", 'income', 'limit', 'category', 'target'))
     out = json.dumps([row for row in reader])
 
     print(out)
@@ -372,6 +373,8 @@ def contact_process(request):
         errors['uploaded'] = 'Your message has been sent successfully, we will review your message soon. Thank you!'
         context['errors'] = errors
         return render(request, 'contact.html', context)
+
+
 def my_reports(request):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -402,6 +405,8 @@ def view_report(request, id):
 
         except:
             return HttpResponse('Error. Report not found')
+        data_str['mean'] = float(data_str['mean'])
+        data_str['mean'] = "%.2f" % data_str['mean']
         context = {
             'report': report,
             'json': report_json,
