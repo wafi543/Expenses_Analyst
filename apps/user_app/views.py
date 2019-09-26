@@ -364,6 +364,11 @@ def contact_process(request):
         return redirect('/contact')
     if request.method == "POST":
         user = User.objects.get(id=uid)
+        if len(request.POST['content']) < 5:
+            errors['length'] = 'Your message should have at least 5 chracters.'
+            context['errors'] = errors
+            return render(request, 'contact.html', context)
+
         new_message = Message.objects.create(
             content=request.POST['content'], path='path', sender=user)
         new_message.save()
