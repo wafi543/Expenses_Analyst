@@ -15,6 +15,8 @@ urlpatterns = [
     #url(r'^admin_dashboard/show_files/(?P<id>[0-9]+)/(?P<user_id>[0-9]+)/delete$', views.admin_delete_file),
     url(r'^admin_dashboard/show_reports$', views.reports),
     url(r'^admin_dashboard/(?P<id>[0-9]+)/delete$', views.delete_user),
+    url(r'^admin_dashboard/show_messages$', views.show_messages),
+    url(r'^admin_dashboard/(?P<id>[0-9]+)/show_message$', views.show_message),
     url(r'^profile$', views.profile),
     url(r'^update_profile$', views.update_profile),
     url(r'^upload_file$', views.upload_file),

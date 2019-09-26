@@ -12,7 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
-absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
+absolute_path = ''
 
 
 def index(request):
@@ -336,16 +336,11 @@ def delete_file(request, id):
 def contact(request):
     if 'uid' in request.session:
         uid = request.session['uid']
-        try:
-            user = User.objects.get(id=uid)
-            context = {
-                'data': data,
-                'user': user,
+        user = User.objects.get(id=uid)
+        context = {
+            'data': data,
+            'user': user,
             }
-            return render(request, 'login.html', context)
-
-        except:
-            return HttpResponse('error loading user')
         return render(request, 'contact.html', context)
     else:
         return render(request, 'login.html')
@@ -364,9 +359,10 @@ def contact_process(request):
         user = User.objects.get(id=uid)
         uploaded = request.FILES['document']
         fileName = uploaded.name
+        fileName = fileName.lower()
         fileSize = uploaded.size
         print(uploaded.name)
-        print(uploaded.size)
+        print(fileName)
 
         # check if size is less than 2.6 megabyte
         if(fileSize > 2621440):
@@ -467,16 +463,47 @@ def index_admin(request):
     return render(request, 'dashboard.html')
 
 def users(request):
-    users = User.objects.all()
-    context = {'users': users}
-    return render(request, 'show_users.html',context)
+     if 'uid' in request.session:
+        uid = request.session['uid']
+        user = User.objects.get(id=uid)
+        users = User.objects.all()
+
+        context = {'users': users,'user': user}
+        return render(request, 'show_users.html',context)
 
 def files(request):
-    files = File.objects.all()
-    context = {'files': files}
-    return render(request, 'show_files.html',context)
+    if 'uid' in request.session and request.session['isAdmin']== True:
+        uid = request.session['uid']
+        user = User.objects.get(id=uid)
+        files = File.objects.all()
+        context = {'files': files,'user':user}
+        return render(request, 'show_files.html',context)
+    else:
+        return render(request, 'login.html') 
 
 def reports(request):
-    reports = Report.objects.all()
-    context ={'reports':reports}
-    return render(request, 'show_reports.html',context)
+    if 'uid' in request.session and request.session['isAdmin']== True:
+        uid = request.session['uid']
+        user = User.objects.get(id=uid)
+        reports = Report.objects.all()
+        context ={'reports':reports,'user':user}
+        return render(request, 'show_reports.html',context)
+
+
+def show_messages(request):
+    if 'uid' in request.session and request.session['isAdmin']== True:
+        uid = request.session['uid']
+        user = User.objects.get(id=uid)
+        messages = Message.objects.all()
+        context = {'messages':messages,'user':user}
+        return render(request,'show_messages.html',context)
+
+
+def show_message(request,id):
+    if 'uid' in request.session and request.session['isAdmin']== True:
+        uid = request.session['uid']
+        user = User.objects.get(id=uid)
+        message = Message.objects.get(id=id)
+        user = User.objects.get(id = message.sender_id)
+        context = {'message':message, 'user':user}
+        return render(request,'show_message.html',context)
