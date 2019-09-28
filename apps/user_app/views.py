@@ -122,6 +122,7 @@ def registering(request):
             first_name=request.POST['fname'], last_name=request.POST['lname'], email=request.POST['email'], password=pw_hash)
         new_user.save()
         request.session['uid'] = new_user.id
+        request.session['isAdmin'] = new_user.isAdmin
         return redirect('/')
     else:
         uInfo = {
