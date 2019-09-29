@@ -12,7 +12,7 @@ import os
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'[a-zA-Z]{2,}')
-absolute_path = '/Users/Abo-Saud/Desktop/Python_Black_Belt/Expenses_Analyst/'
+absolute_path = ''
 
 
 def index(request):
@@ -122,6 +122,7 @@ def registering(request):
             first_name=request.POST['fname'], last_name=request.POST['lname'], email=request.POST['email'], password=pw_hash)
         new_user.save()
         request.session['uid'] = new_user.id
+        request.session['isAdmin'] = new_user.isAdmin
         return redirect('/')
     else:
         uInfo = {
@@ -446,6 +447,7 @@ def delete_user(request, id):
     else:
         return redirect('/logout')
 
+
 def delete_report(request, id):
     if 'uid' in request.session:
         uid = request.session['uid']
@@ -475,7 +477,7 @@ def users(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         users = User.objects.all()
-        context = {'users': users, 'user': user,'data': data}
+        context = {'users': users, 'user': user, 'data': data}
         return render(request, 'show_users.html', context)
     else:
         return redirect("/logout")
@@ -486,7 +488,7 @@ def files(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         files = File.objects.all()
-        context = {'files': files, 'user': user,'data': data}
+        context = {'files': files, 'user': user, 'data': data}
         return render(request, 'show_files.html', context)
     else:
         return redirect("/logout")
@@ -497,7 +499,7 @@ def reports(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         reports = Report.objects.all()
-        context = {'reports': reports, 'user': user,'data': data}
+        context = {'reports': reports, 'user': user, 'data': data}
         return render(request, 'show_reports.html', context)
     else:
         return redirect("/logout")
@@ -508,7 +510,7 @@ def show_messages(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         messages = Message.objects.all()
-        context = {'messages': messages, 'user': user,'data': data}
+        context = {'messages': messages, 'user': user, 'data': data}
         return render(request, 'show_messages.html', context)
     else:
         return redirect("/logout")
@@ -520,7 +522,7 @@ def show_message(request, id):
         user = User.objects.get(id=uid)
         message = Message.objects.get(id=id)
         user = User.objects.get(id=message.sender_id)
-        context = {'message': message, 'user': user,'data': data}
+        context = {'message': message, 'user': user, 'data': data}
         return render(request, 'show_message.html', context)
     else:
         return redirect("/logout")
