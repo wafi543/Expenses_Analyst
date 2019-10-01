@@ -112,6 +112,7 @@
                                         <table class="table">
                                             <tbody>
                                                 {% for user in users%}
+                                                {%if not user.isAdmin%}
 
                                                 <tr>
 
@@ -140,6 +141,7 @@
                                                         </button>
                                                     </td>
                                                 </tr>
+                                                {%endif%}
                                                 {% endfor %}
 
                                             </tbody>

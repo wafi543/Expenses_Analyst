@@ -509,7 +509,9 @@ def show_messages(request):
         uid = request.session['uid']
         user = User.objects.get(id=uid)
         messages = Message.objects.all()
-        context = {'messages': messages, 'user': user, 'data': data}
+        users = User.objects.all()
+
+        context = {'messages': messages, 'user': user, 'data': data,'users':users}
         return render(request, 'show_messages.html', context)
     else:
         return redirect("/logout")

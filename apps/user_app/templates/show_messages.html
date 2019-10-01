@@ -30,11 +30,11 @@
            Tip 2: you can also add an image using data-image tag
        -->
             <div class="sidebar-wrapper">
-                    <div class="logo">
-                        <a href="" class="simple-text">
-                            EXPENSES ANALYST
-                        </a>
-                    </div>
+                <div class="logo">
+                    <a href="" class="simple-text">
+                        EXPENSES ANALYST
+                    </a>
+                </div>
                 <ul class="nav">
                     <li>
                         <a class="nav-link" href="./show_users">
@@ -108,15 +108,18 @@
 
 
                                         <table class="table">
+                                            <thead>
+                                                <th>Message id</th>
+                                                <th>Message</th>
+                                                <th>Sender id</th>
+                                                <th>View</th>
+                                            </thead>
                                             <tbody>
                                                 {%for message in messages%}
                                                 <tr>
 
                                                     <td>
                                                         {{message.id}}
-                                                    </td>
-                                                    <td>
-                                                        {{user.first_name}}
                                                     </td>
                                                     <td>
                                                         {{message.content}} </td>
